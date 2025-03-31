@@ -1,4 +1,9 @@
--- TODO: lsp_msg
+vim.api.nvim_create_autocmd('DiagnosticChanged', {
+  callback = function(args)
+    vim.schedule(vim.cmd.redrawstatus)
+  end,
+})
+
 return {
   "rebelot/heirline.nvim",
   event = "BufEnter",
@@ -209,7 +214,7 @@ return {
       condition = function(self)
         -- filter list
         return not conditions.buffer_matches({
-          filetype = { "qf" } -- qf is vim.lsp.buf.reference()
+          filetype = { "qf", "checkhealth" } -- qf is vim.lsp.buf.reference()
         }, self.bufnr)
       end,
       hl = function(self)
@@ -369,27 +374,24 @@ return {
         hl = { bold = true }
       },
       -- You could handle delimiters, icons and counts similar to Diagnostics
-      Space,
       {
         provider = function(self)
           local count = self.status_dict.added or 0
-          return count > 0 and (require("icons").GitAdd .. " " .. count)
+          return count > 0 and (" " .. require("icons").GitAdd .. " " .. count)
         end,
         hl = { fg = "git_add" },
       },
-      Space,
       {
         provider = function(self)
           local count = self.status_dict.removed or 0
-          return count > 0 and (require("icons").GitDelete .. " " .. count)
+          return count > 0 and (" " .. require("icons").GitDelete .. " " .. count)
         end,
         hl = { fg = "git_del" },
       },
-      Space,
       {
         provider = function(self)
           local count = self.status_dict.changed or 0
-          return count > 0 and (require("icons").GitChange .. " " .. count)
+          return count > 0 and (" " .. require("icons").GitChange .. " " .. count)
         end,
         hl = { fg = "git_change" },
       },

@@ -1,3 +1,4 @@
+local mid_mapping = false
 local autocmds = {
   highlightyank = {
     {
@@ -23,6 +24,17 @@ local autocmds = {
     },
   },
 }
+
+-- auto clear hlsearch
+local ns = vim.api.nvim_create_namespace("auto_hlsearch")
+vim.on_key(function(char)
+  if vim.fn.mode() == "n" and not mid_mapping then
+    local new_hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(char))
+    if vim.o.hlsearch ~= new_hlsearch then vim.opt.hlsearch = new_hlsearch end
+    mid_mapping = true
+    vim.schedule(function() mid_mapping = false end)
+  end
+end, ns)
 
 local function set_jsonc_filetype()
   local path = vim.fn.expand('%:p:h')

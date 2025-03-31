@@ -44,7 +44,7 @@ return {
     },
     { "<leader>fb", function() require("snacks").picker.buffers() end,               desc = "Buffers" },
     { "<leader>f/", function() require("snacks").picker.grep() end,                  desc = "Grep" },
-    { "<leader>ft", function() require("snacks").picker.todo_comments() end,         desc = "Todo" },
+    { "<leader>ft", function() require("snacks").picker.todo_comments() end,         desc = "Todo" }, -- FIXME: weird prompt
     { "<leader>n",  function() require("snacks").picker.notifications() end,         desc = "Notification History" },
     -- git
     { "<leader>gb", function() require("snacks").picker.git_branches() end,          desc = "Git Branches" },

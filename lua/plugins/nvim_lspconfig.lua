@@ -1,4 +1,3 @@
-local mid_mapping = false
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
@@ -7,19 +6,17 @@ return {
       "williamboman/mason-lspconfig.nvim",
       dependencies = { "williamboman/mason.nvim" },
       opts = function(_, opts)
-        opts.ensure_installed = { "lua_ls" }
+        opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo" }
 
-        local capabilities = {
-          textDocument = {
-            foldingRange = {
-              dynamicRegistration = false,
-              lineFoldingOnly = true
-            }
-          }
-        }
-        capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+        local capabilities = require('blink.cmp').get_lsp_capabilities()
 
-        require("mason-lspconfig").setup_handlers {
+        local skipped = {}
+        for _, lsp in ipairs(require("bridge").no_auto_lsp_setup) do
+          -- vim.notify(lsp .. "skipped")
+          skipped[lsp] = function() end
+        end
+
+        require("mason-lspconfig").setup_handlers(vim.tbl_deep_extend("error", {
           -- The first entry (without a key) will be the default handler
           -- and will be called for each installed server that doesn't have
           -- a dedicated handler.
@@ -33,7 +30,7 @@ return {
           -- ["rust_analyzer"] = function ()
           --   require("rust-tools").setup {}
           -- end
-        }
+        }, skipped))
       end,
     },
   },
@@ -52,21 +49,31 @@ return {
       severity_sort = true,
     })
 
-    -- auto clear hlsearch
-    local ns = vim.api.nvim_create_namespace("auto_hlsearch")
-    vim.on_key(function(char)
-      if vim.fn.mode() == "n" and not mid_mapping then
-        local new_hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(char))
-        if vim.o.hlsearch ~= new_hlsearch then vim.opt.hlsearch = new_hlsearch end
-        mid_mapping = true
-        vim.schedule(function() mid_mapping = false end)
-      end
-    end, ns)
+    vim.api.nvim_create_autocmd("LspProgress", {
+      pattern = "end",
+      command = "redrawstatus",
+    })
 
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(event)
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         local buf = event.buf
+
+        if client and client:supports_method("textDocument/codeLens", buf) then
+          vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
+            desc = "Refresh codelens (buffer)",
+            callback = function(args)
+              vim.lsp.codelens.refresh({ bufnr = args.buf })
+            end,
+          })
+          vim.api.nvim_create_autocmd("LspProgress", {
+            pattern = "end",
+            desc = "Refresh codelens (buffer)",
+            callback = function(args)
+              vim.lsp.codelens.refresh({ bufnr = args.buf })
+            end,
+          })
+        end
 
         local mappings = {
           { { "n", "x" }, "<leader>la", function() vim.lsp.buf.code_action() end,            desc = "LSP code action",       cond = "textDocument/codeAction" },
