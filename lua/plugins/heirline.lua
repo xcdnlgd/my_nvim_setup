@@ -510,8 +510,17 @@ return {
       -- Or complicate things a bit and get the servers names
       provider = function()
         local names = {}
-        for i, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
-          table.insert(names, server.name)
+        for _, server in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+          if server.name == "null-ls" then
+            for _, source in ipairs(require("null-ls").get_sources()) do
+              local filetype = vim.bo.filetype
+              if source.filetypes[filetype] or source.filetypes["_all"] and source.filetypes[filetype] == nil then
+                table.insert(names, source.name)
+              end
+            end
+          else
+            table.insert(names, server.name)
+          end
         end
         return require("icons").ActiveLSP .. "  " .. table.concat(names, ", ") .. ""
       end,
