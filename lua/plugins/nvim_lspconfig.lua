@@ -6,7 +6,8 @@ return {
       "williamboman/mason-lspconfig.nvim",
       dependencies = { "williamboman/mason.nvim" },
       opts = function(_, opts)
-        opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright" }
+        opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "html", "cssls",
+          "emmet_ls" }
 
         local capabilities = require('blink.cmp').get_lsp_capabilities()
 
@@ -82,7 +83,7 @@ return {
         end
 
         local mappings = {
-          { { "n", "x" }, "<leader>la", function() vim.lsp.buf.code_action() end,            desc = "LSP code action",       cond = "textDocument/codeAction" },
+          { { "n", "x" }, "<leader>la", function() vim.lsp.buf.code_action() end, desc = "LSP code action",       cond = "textDocument/codeAction" },
           {
             "n",
             "<leader>lA",
@@ -90,9 +91,10 @@ return {
             desc = "LSP source action",
             cond = "textDocument/codeAction"
           },
-          { "n",          "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, desc = "Format buffer",         cond = "textDocument/formatting" },
-          { "v",          "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, desc = "Format buffer",         cond = "textDocument/rangeFormatting" },
-          { "n",          "<Leader>lr", function() vim.lsp.buf.rename() end,                 desc = "Rename current symbol", cond = "textDocument/rename" },
+          -- use conform.nvim to format, which will fallback to lsp
+          -- { "n",          "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, desc = "Format buffer",         cond = "textDocument/formatting" },
+          -- { "v",          "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, desc = "Format buffer",         cond = "textDocument/rangeFormatting" },
+          { "n",          "<Leader>lr", function() vim.lsp.buf.rename() end,      desc = "Rename current symbol", cond = "textDocument/rename" },
         }
 
         for _, mapping in ipairs(mappings) do

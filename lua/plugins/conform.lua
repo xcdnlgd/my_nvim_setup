@@ -1,0 +1,15 @@
+vim.keymap.set({ "n", "v" }, "<leader>lf", function() require("conform").format() end, { desc = "Format buffer" })
+return {
+  "stevearc/conform.nvim",
+  opts = {
+    formatters_by_ft = {
+      python = { "isort", "black" },
+      rust = { "rustfmt" },
+      html = { "prettierd" },
+      css = { "prettierd" },
+    },
+    default_format_opts = {
+      lsp_format = "fallback",
+    },
+  },
+}

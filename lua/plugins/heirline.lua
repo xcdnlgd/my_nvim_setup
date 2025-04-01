@@ -522,6 +522,13 @@ return {
             table.insert(names, server.name)
           end
         end
+
+        for _, formater, is_lsp in ipairs(require("conform").list_formatters_to_run()) do
+          if not is_lsp then
+            table.insert(names, formater.name)
+          end
+        end
+
         return require("icons").ActiveLSP .. "  " .. table.concat(names, ", ") .. ""
       end,
       hl = { fg = "green", bold = true },
