@@ -49,11 +49,6 @@ return {
       severity_sort = true,
     })
 
-    vim.api.nvim_create_autocmd("LspProgress", {
-      pattern = "end",
-      command = "redrawstatus",
-    })
-
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(event)
         local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -61,13 +56,6 @@ return {
 
         if client and client:supports_method("textDocument/codeLens", buf) then
           vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
-            desc = "Refresh codelens (buffer)",
-            callback = function(args)
-              vim.lsp.codelens.refresh({ bufnr = args.buf })
-            end,
-          })
-          vim.api.nvim_create_autocmd("LspProgress", {
-            pattern = "end",
             desc = "Refresh codelens (buffer)",
             callback = function(args)
               vim.lsp.codelens.refresh({ bufnr = args.buf })

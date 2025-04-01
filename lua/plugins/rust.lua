@@ -3,8 +3,10 @@ vim.g.rustaceanvim = {
   -- Plugin configuration
   tools = {
     reload_workspace_from_cargo_toml = true,
-    on_initialized = function ()
+    on_initialized = function()
       vim.cmd("RustLsp flyCheck") -- NOTE: fixes (when nvim launches, i have to type for diagnostics to show)
+      vim.lsp.codelens.refresh()
+      vim.cmd("redrawstatus")
     end
   },
   -- LSP configuration
