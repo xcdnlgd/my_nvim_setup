@@ -1,7 +1,10 @@
 return {
-  'saghen/blink.cmp',
+  "Saghen/blink.cmp",
   dependencies = { 'rafamadriz/friendly-snippets' },
-  version = '1.*',
+  -- use a release tag to download pre-built binaries
+  -- version = '1.*',
+  -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+  build = 'cargo build --release',
   opts = {
     keymap = {
       preset = 'super-tab',
@@ -11,13 +14,18 @@ return {
     signature = {
       enabled = true,
       window = {
-        show_documentation  = false,
+        show_documentation = false,
       },
     },
     appearance = {
       nerd_font_variant = 'mono'
     },
-    completion = { documentation = { auto_show = false } },
+    completion = {
+      documentation = { auto_show = false },
+      trigger = {
+        prefetch_on_insert = true, -- FIXME: when true, when enter insert mode at the beginning of a word and press tab, triggers
+      }
+    },
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
@@ -26,5 +34,4 @@ return {
     },
     fuzzy = { implementation = "prefer_rust_with_warning" }
   },
-  opts_extend = { "sources.default" }
 }
