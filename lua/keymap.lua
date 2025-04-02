@@ -28,7 +28,7 @@ end, { desc = 'Toggle lsp inlay_hint' })
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, desc = "Move cursor down" })
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, desc = "Move cursor up" })
 
-vim.keymap.set("n", "<leader>w", ":w<cr>", { desc = "Save" })
+vim.keymap.set("n", "<leader>w", ":up<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", ":conf q<cr>", { desc = "Quit window" })
 vim.keymap.set("n", "<leader>c", ":bd<cr>", { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>Q", ":confirm qall<cr>", { desc = "Exit nvim" })
