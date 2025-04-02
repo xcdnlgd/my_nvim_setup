@@ -39,10 +39,10 @@ vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment" }
 vim.keymap.set("n", "|", "<Cmd>vsplit<CR>", { desc = "Vertical Split" })
 vim.keymap.set("n", "\\", "<Cmd>split<CR>", { desc = "Horizontal Split" })
 
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left split" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })
+vim.keymap.set({ "n", "t" }, "<C-h>", "<C-w>h", { desc = "Move to left split" })
+vim.keymap.set({ "n", "t" }, "<C-j>", "<C-w>j", { desc = "Move to below split" })
+vim.keymap.set({ "n", "t" }, "<C-k>", "<C-w>k", { desc = "Move to above split" })
+vim.keymap.set({ "n", "t" }, "<C-l>", "<C-w>l", { desc = "Move to right split" })
 
 vim.keymap.set("v", "p", "P", opts)
 -- don't change the clipboard
