@@ -479,6 +479,9 @@ return {
       end,
       provider = function(self)
         local search = self.search
+        if search == nil then -- XXX: needed for windows, condition does not work at startup
+          return ""
+        end
         return require("icons").Search ..
             " " .. string.format("[%d/%d]", search.current, math.min(search.total, search.maxcount))
       end,
@@ -552,7 +555,7 @@ return {
 
     local DefaultStatusline = { ViMode, Space, FileNameBlock, Space, Git, Space, Diagnostics, Align,
       SearchCount, MacroRec,
-      Align, LSPActive, Ruler, Space, ScrollBar, Space, ViMode }
+      Align, LSPActive, Space, Ruler, Space, ScrollBar, Space, ViMode }
 
     local InactiveStatusline = {
       condition = conditions.is_not_active,
