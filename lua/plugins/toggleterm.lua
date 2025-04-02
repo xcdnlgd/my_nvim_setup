@@ -31,13 +31,20 @@ return {
         vim.keymap.set({ "n", "t", "i" }, "<C-\\>", toggle, { desc = "Toggle terminal", buffer = t.bufnr })
       end
     end,
-    on_open = function ()
+    auto_scroll = true,
+    on_open = function()
+      vim.schedule(function()
+        if vim.bo.filetype == "toggleterm" then -- FIXME: not robust in TermExec
+          vim.cmd.startinsert()
+        end
+      end)
       vim.wo.spell = false
     end,
-    on_close = function ()
+    on_close = function()
       vim.wo.spell = true
     end,
     shading_factor = 2,
     float_opts = { border = "rounded" },
+    start_in_insert = false -- set in on_open callback
   },
 }
