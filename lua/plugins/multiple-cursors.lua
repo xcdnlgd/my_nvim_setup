@@ -3,10 +3,10 @@ return {
   version = "*",
   opts = {
     pre_hook = function()
-      require("nvim-autopairs").disable()
+      require("blink.pairs.mappings").disable()
     end,
     post_hook = function()
-      require("nvim-autopairs").enable()
+      require("blink.pairs.mappings").enable()
     end,
   },
   keys = {

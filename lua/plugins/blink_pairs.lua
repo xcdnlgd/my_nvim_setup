@@ -1,11 +1,11 @@
 return {
-  'saghen/blink.pairs',
-  version = '*', -- (recommended) only required with prebuilt binaries
+  'xcdnlgd/blink.pairs',
+  -- version = '*', -- (recommended) only required with prebuilt binaries
 
   -- download prebuilt binaries from github releases
-  dependencies = 'saghen/blink.download',
+  -- dependencies = 'saghen/blink.download',
   -- OR build from source
-  -- build = 'cargo build --release',
+  build = 'cargo build --release',
   opts = {
     highlights = {
       enabled = true,
