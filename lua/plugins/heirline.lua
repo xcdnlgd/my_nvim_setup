@@ -479,9 +479,6 @@ return {
       end,
       provider = function(self)
         local search = self.search
-        if search == nil then -- XXX: needed for windows, condition does not work at startup
-          return ""
-        end
         return require("icons").Search ..
             " " .. string.format("[%d/%d]", search.current, math.min(search.total, search.maxcount))
       end,
