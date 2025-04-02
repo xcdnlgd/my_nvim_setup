@@ -22,27 +22,27 @@ return {
       on_attach = function(bufnr)
         vim.keymap.set({ "n", "v" }, "<leader>g", "", { buffer = bufnr, desc = "Git" })
 
-        vim.keymap.set("n", "<leader>l", function() require("gitsigns").blame_line() end,
+        vim.keymap.set("n", "<leader>gl", function() require("gitsigns").blame_line() end,
           { buffer = bufnr, desc = "View Git blame" })
-        vim.keymap.set("n", "<leader>L", function() require("gitsigns").blame_line { full = true } end,
+        vim.keymap.set("n", "<leader>gL", function() require("gitsigns").blame_line { full = true } end,
           { buffer = bufnr, desc = "View full Git blame" })
-        vim.keymap.set("n", "<leader>p", function() require("gitsigns").preview_hunk_inline() end,
+        vim.keymap.set("n", "<leader>gp", function() require("gitsigns").preview_hunk_inline() end,
           { buffer = bufnr, desc = "Preview Git hunk" })
-        vim.keymap.set("n", "<leader>r", function() require("gitsigns").reset_hunk() end,
+        vim.keymap.set("n", "<leader>gr", function() require("gitsigns").reset_hunk() end,
           { buffer = bufnr, desc = "Reset Git hunk" })
-        vim.keymap.set("v", "<leader>r",
+        vim.keymap.set("v", "<leader>gr",
           function() require("gitsigns").reset_hunk { vim.fn.line ".", vim.fn.line "v" } end,
           { buffer = bufnr, desc = "Reset Git hunk", })
-        vim.keymap.set("n", "<leader>R", function() require("gitsigns").reset_buffer() end,
+        vim.keymap.set("n", "<leader>gR", function() require("gitsigns").reset_buffer() end,
           { buffer = bufnr, desc = "Reset Git buffer" })
-        vim.keymap.set("n", "<leader>s", function() require("gitsigns").stage_hunk() end,
+        vim.keymap.set("n", "<leader>gs", function() require("gitsigns").stage_hunk() end,
           { buffer = bufnr, desc = "Stage/Unstage Git hunk" })
-        vim.keymap.set("v", "<leader>s",
+        vim.keymap.set("v", "<leader>gs",
           function() require("gitsigns").stage_hunk { vim.fn.line ".", vim.fn.line "v" } end,
           { buffer = bufnr, desc = "Stage Git hunk", })
-        vim.keymap.set("n", "<leader>S", function() require("gitsigns").stage_buffer() end,
+        vim.keymap.set("n", "<leader>gS", function() require("gitsigns").stage_buffer() end,
           { buffer = bufnr, desc = "Stage Git buffer" })
-        vim.keymap.set("n", "<leader>d", function() require("gitsigns").diffthis() end,
+        vim.keymap.set("n", "<leader>gd", function() require("gitsigns").diffthis() end,
           { buffer = bufnr, desc = "View Git diff" })
 
         vim.keymap.set("n", "[G", function() require("gitsigns").nav_hunk "first" end,
