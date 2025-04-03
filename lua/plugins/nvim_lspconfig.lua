@@ -7,7 +7,7 @@ return {
       dependencies = { "williamboman/mason.nvim" },
       opts = function(_, opts)
         opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "ruff", "html", "cssls",
-          "emmet_ls" }
+          "emmet_ls", "jsonls" }
 
         local capabilities = require('blink.cmp').get_lsp_capabilities()
 

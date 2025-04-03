@@ -35,7 +35,7 @@ return {
       highlight = { enable = true },
       incremental_selection = { enable = true },
       ensure_installed = {
-        "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc", "rust", "toml", "cpp", "html", "css"
+        "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc", "rust", "toml", "cpp", "html", "css", "json", "jsonc"
       },
       textobjects = {
         select = {

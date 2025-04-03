@@ -34,7 +34,9 @@ return {
     auto_scroll = true,
     on_open = function()
       vim.schedule(function()
-        if vim.bo.filetype == "toggleterm" then -- FIXME: not robust in TermExec
+        if vim.bo.filetype == "toggleterm" then
+          -- FIXME: not robust in TermExec
+          -- seems something else do startinsert as well
           vim.cmd.startinsert()
         end
       end)
