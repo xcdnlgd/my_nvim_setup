@@ -6,7 +6,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
       dependencies = { "williamboman/mason.nvim" },
       opts = function(_, opts)
-        opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "html", "cssls",
+        opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "ruff", "html", "cssls",
           "emmet_ls" }
 
         local capabilities = require('blink.cmp').get_lsp_capabilities()
