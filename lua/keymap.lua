@@ -19,12 +19,6 @@ vim.keymap.set("n", "]e", diagnostic_jump(true, "ERROR"), { desc = "Next error" 
 vim.keymap.set("n", "[w", diagnostic_jump(false, "WARN"), { desc = "Previous warning" })
 vim.keymap.set("n", "]w", diagnostic_jump(true, "WARN"), { desc = "Next warning" })
 
-vim.keymap.set({ "n", "v" }, "<leader>l", "", { desc = "Language Tools" })
-vim.keymap.set("n", "<leader>t", "", { desc = "Terminal" })
-vim.keymap.set("n", "<leader>g", "", { desc = "Git" })
-vim.keymap.set("n", "<leader>f", "", { desc = "Find" })
-
-vim.keymap.set({ "n", "v" }, "<leader>u", "", { desc = "UI/UX" })
 vim.keymap.set('n', '<leader>ul', function()
   local new_config = not vim.diagnostic.config().virtual_lines
   vim.diagnostic.config({ virtual_lines = new_config })
