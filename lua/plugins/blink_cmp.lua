@@ -22,9 +22,6 @@ return {
     },
     completion = {
       documentation = { auto_show = false },
-      trigger = {
-        prefetch_on_insert = true, -- FIXME: when true, when enter insert mode at the beginning of a word and press tab, triggers
-      }
     },
     sources = {
       default = { 'lsp', 'path', 'snippets', 'buffer' },

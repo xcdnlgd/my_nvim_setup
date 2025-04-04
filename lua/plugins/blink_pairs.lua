@@ -19,7 +19,7 @@ local not_followed_by_char_except_for = function(except)
 end
 
 return {
-  'xcdnlgd/blink.pairs',
+  'Saghen/blink.pairs',
   -- version = '*', -- (recommended) only required with prebuilt binaries
 
   -- download prebuilt binaries from github releases
