@@ -55,7 +55,7 @@ local M = {
   Spellcheck = "󰓆",
   Tab = "󰓩",
   TabClose = "󰅙",
-  Terminal = "",
+  Terminal = "",
   Window = "",
   WordFile = "󰈭",
 }

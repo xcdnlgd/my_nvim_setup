@@ -89,7 +89,7 @@ return {
         end,
         provider = function(self)
           if vim.api.nvim_get_option_value("buftype", { buf = self.bufnr }) == "terminal" then
-            return require("icons").Terminal
+            return " " .. require("icons").Terminal .. " "
           else
             return require("icons").FileReadOnly
           end
@@ -597,7 +597,7 @@ return {
       -- or we could do that later (see #conditional-statuslines below)
       provider = function()
         local tname, _ = vim.api.nvim_buf_get_name(0):gsub(".*:", "")
-        return " " .. tname
+        return require("icons").Terminal .. " " .. tname
       end,
       hl = { fg = "blue", bold = true },
     }
