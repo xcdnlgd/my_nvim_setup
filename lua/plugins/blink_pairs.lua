@@ -42,17 +42,14 @@ return {
         pairs = {
           ['('] = {
             ')',
-            enter = false,
             when = not_followed_by_char_except_for(except_for)
           },
           ['['] = {
             ']',
-            enter = false,
             when = not_followed_by_char_except_for(except_for)
           },
           ['{'] = {
             '}',
-            enter = false,
             when = not_followed_by_char_except_for(except_for)
           },
           ["'"] = {
