@@ -1,3 +1,5 @@
+-- TODO: start the shell that starts nvim
+
 local state = {
   current = "bottom",
   floating = {
@@ -9,6 +11,8 @@ local state = {
     win = -1,
   }
 }
+
+local exec = vim.fn.has("win32") == 1 and "\r\n" or "\n"
 
 local open_float_window = function(opts)
   opts = opts or {}
@@ -61,8 +65,6 @@ local open_bottom_window = function(opts)
     buf = opts.buf
   else
     buf = vim.api.nvim_create_buf(false, true)
-    vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
-      { desc = "Move to above split" })
   end
   local config = {
     style = "minimal",
@@ -92,6 +94,8 @@ vim.api.nvim_create_user_command("ToggleTerm", function()
       if vim.bo[state.bottom.buf].buftype ~= "terminal" then
         vim.cmd.terminal()
         vim.bo[state.bottom.buf].buflisted = false
+        vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
+          { desc = "Move to above split", buffer = state.bottom.buf })
         vim.api.nvim_create_autocmd("WinEnter", {
           buffer = state.bottom.buf,
           callback = function()
@@ -112,7 +116,10 @@ vim.api.nvim_create_user_command("TermExec", function(v)
     if vim.bo[state.bottom.buf].buftype ~= "terminal" then
       vim.api.nvim_win_call(state.bottom.win, function()
         vim.cmd.terminal()
+        vim.cmd.normal("G") -- auto scroll to bottom
         vim.bo[state.bottom.buf].buflisted = false
+        vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
+          { desc = "Move to above split", buffer = state.bottom.buf })
         vim.api.nvim_create_autocmd("WinEnter", {
           buffer = state.bottom.buf,
           callback = function()
@@ -122,8 +129,7 @@ vim.api.nvim_create_user_command("TermExec", function(v)
       end)
     end
   end
-  -- FIXME: does not scroll to bottom if not enter it
-  vim.fn.chansend(vim.bo[state.bottom.buf].channel, v.args .. "\n")
+  vim.fn.chansend(vim.bo[state.bottom.buf].channel, v.args .. exec)
 end, { nargs = "+" })
 
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Back to normal" })

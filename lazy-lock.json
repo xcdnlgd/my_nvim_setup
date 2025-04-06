@@ -25,7 +25,7 @@
   "numb.nvim": { "branch": "master", "commit": "288ab9e593999d26a8753f87873f797fb96ae383" },
   "nvim-highlight-colors": { "branch": "main", "commit": "982543ec460199de5bdc491745dc9faa6bcc19b6" },
   "nvim-lspconfig": { "branch": "master", "commit": "d3ad666b7895f958d088cceb6f6c199672c404fe" },
-  "nvim-treesitter": { "branch": "master", "commit": "523a9e148919f58eb5a013f76787e57696e00c93" },
+  "nvim-treesitter": { "branch": "master", "commit": "e5c8398e4492815a7e2adce46fcb08eccf2fa392" },
   "nvim-treesitter-context": { "branch": "master", "commit": "439789a9a8df9639ecd749bb3286b77117024a6f" },
   "nvim-treesitter-textobjects": { "branch": "master", "commit": "9937e5e356e5b227ec56d83d0a9d0a0f6bc9cad4" },
   "nvim-ts-autotag": { "branch": "main", "commit": "a1d526af391f6aebb25a8795cbc05351ed3620b5" },
@@ -35,6 +35,5 @@
   "smart-splits.nvim": { "branch": "master", "commit": "24e471dddba8e133f03a26e4e3d8c544725c71c4" },
   "snacks.nvim": { "branch": "main", "commit": "bc0630e43be5699bb94dadc302c0d21615421d93" },
   "todo-comments.nvim": { "branch": "main", "commit": "304a8d204ee787d2544d8bc23cd38d2f929e7cc5" },
-  "toggleterm.nvim": { "branch": "main", "commit": "9a88eae817ef395952e08650b3283726786fb5fb" },
   "which-key.nvim": { "branch": "main", "commit": "370ec46f710e058c9c1646273e6b225acf47cbed" }
 }
