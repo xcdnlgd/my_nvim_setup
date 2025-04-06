@@ -96,6 +96,8 @@ vim.api.nvim_create_user_command("ToggleTerm", function()
         vim.bo[state.bottom.buf].buflisted = false
         vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
           { desc = "Move to above split", buffer = state.bottom.buf })
+        vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
+          { desc = "Move to above split", buffer = state.bottom.buf })
         vim.api.nvim_create_autocmd("WinEnter", {
           buffer = state.bottom.buf,
           callback = function()
@@ -119,6 +121,8 @@ vim.api.nvim_create_user_command("TermExec", function(v)
         vim.cmd.normal("G") -- auto scroll to bottom
         vim.bo[state.bottom.buf].buflisted = false
         vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
+          { desc = "Move to above split", buffer = state.bottom.buf })
+        vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
           { desc = "Move to above split", buffer = state.bottom.buf })
         vim.api.nvim_create_autocmd("WinEnter", {
           buffer = state.bottom.buf,
