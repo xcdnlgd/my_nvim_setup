@@ -14,7 +14,7 @@ local state = {
 
 local exec = vim.fn.has("win32") == 1 and "\r\n" or "\n"
 
-local open_float_window = function(opts)
+local open_float_terminal = function(opts)
   opts = opts or {}
   local buf = nil
   if vim.api.nvim_buf_is_valid(opts.buf) then
@@ -47,6 +47,10 @@ local open_float_window = function(opts)
 
   local win = vim.api.nvim_open_win(buf, true, get_config())
   vim.wo[win].winhighlight = "Normal:Normal,FloatBorder:Normal"
+  if vim.bo[buf].buftype ~= "terminal" then
+    vim.cmd.terminal()
+    vim.bo[buf].buflisted = false
+  end
   vim.api.nvim_create_autocmd("VimResized", {
     callback = function()
       if not win or not vim.api.nvim_win_is_valid(win) then return end
@@ -56,7 +60,7 @@ local open_float_window = function(opts)
   return { buf = buf, win = win }
 end
 
-local open_bottom_window = function(opts)
+local open_bottom_terminal = function(opts)
   opts = vim.tbl_deep_extend("keep", opts or {}, {
     enter = true
   })
@@ -73,38 +77,36 @@ local open_bottom_window = function(opts)
   }
   local win = vim.api.nvim_open_win(buf, opts.enter, config)
   vim.wo[win].winhighlight = "Normal:Normal"
+  if vim.bo[buf].buftype ~= "terminal" then
+    vim.api.nvim_win_call(win, function()
+      vim.cmd.terminal()
+      vim.bo[buf].buflisted = false
+      vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
+        { desc = "Move to above split", buffer = buf })
+      vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
+        { desc = "Move to above split", buffer = buf })
+      vim.api.nvim_create_autocmd("WinEnter", {
+        buffer = buf,
+        callback = function()
+          vim.cmd.startinsert()
+        end,
+      })
+    end)
+  end
   return { buf = buf, win = win }
 end
 
 vim.api.nvim_create_user_command("ToggleTerm", function()
   if state.current == "floating" then
     if not vim.api.nvim_win_is_valid(state.floating.win) then
-      state.floating = open_float_window({ buf = state.floating.buf })
-      if vim.bo[state.floating.buf].buftype ~= "terminal" then
-        vim.cmd.terminal()
-        vim.bo[state.floating.buf].buflisted = false
-      end
+      state.floating = open_float_terminal({ buf = state.floating.buf })
       vim.cmd.startinsert()
     else
       vim.api.nvim_win_hide(state.floating.win)
     end
   elseif state.current == "bottom" then
     if not vim.api.nvim_win_is_valid(state.bottom.win) then
-      state.bottom = open_bottom_window({ buf = state.bottom.buf })
-      if vim.bo[state.bottom.buf].buftype ~= "terminal" then
-        vim.cmd.terminal()
-        vim.bo[state.bottom.buf].buflisted = false
-        vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
-          { desc = "Move to above split", buffer = state.bottom.buf })
-        vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
-          { desc = "Move to above split", buffer = state.bottom.buf })
-        vim.api.nvim_create_autocmd("WinEnter", {
-          buffer = state.bottom.buf,
-          callback = function()
-            vim.cmd.startinsert()
-          end,
-        })
-      end
+      state.bottom = open_bottom_terminal({ buf = state.bottom.buf })
       vim.cmd.startinsert()
     else
       vim.api.nvim_win_hide(state.bottom.win)
@@ -114,24 +116,10 @@ end, {})
 
 vim.api.nvim_create_user_command("TermExec", function(v)
   if not vim.api.nvim_win_is_valid(state.bottom.win) then
-    state.bottom = open_bottom_window({ buf = state.bottom.buf, enter = false })
-    if vim.bo[state.bottom.buf].buftype ~= "terminal" then
-      vim.api.nvim_win_call(state.bottom.win, function()
-        vim.cmd.terminal()
-        vim.cmd.normal("G") -- auto scroll to bottom
-        vim.bo[state.bottom.buf].buflisted = false
-        vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
-          { desc = "Move to above split", buffer = state.bottom.buf })
-        vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
-          { desc = "Move to above split", buffer = state.bottom.buf })
-        vim.api.nvim_create_autocmd("WinEnter", {
-          buffer = state.bottom.buf,
-          callback = function()
-            vim.cmd.startinsert()
-          end,
-        })
-      end)
-    end
+    state.bottom = open_bottom_terminal({ buf = state.bottom.buf, enter = false })
+    vim.api.nvim_win_call(state.bottom.win, function()
+      vim.cmd.normal("G") -- auto scroll to bottom
+    end)
   end
   vim.fn.chansend(vim.bo[state.bottom.buf].channel, v.args .. exec)
 end, { nargs = "+" })

@@ -37,7 +37,14 @@ vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, si
 
 vim.keymap.set("n", "<leader>w", ":up<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", ":conf q<cr>", { desc = "Quit window" })
-vim.keymap.set("n", "<leader>c", ":bd<cr>", { desc = "Close buffer" })
+vim.keymap.set("n", "<leader>c", function()
+  local bufnum = #vim.fn.getbufinfo({ buflisted = 1 })
+  if bufnum > 1 then
+    vim.cmd("bp|bd #")
+  else
+    vim.cmd("bd")
+  end
+end, { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>Q", ":confirm qall<cr>", { desc = "Exit nvim" })
 vim.keymap.set("n", "<leader>ld", function() vim.diagnostic.open_float() end, { desc = "Hover diagnostics" })
 

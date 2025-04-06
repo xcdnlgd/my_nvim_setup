@@ -3,6 +3,7 @@ return {
   opts = function(_, opts)
     local wk = require("which-key")
     wk.add({
+      { "<leader>b", group = "Buffer" },
       { "<leader>f", group = "Find",           mode = "n" },
       { "<leader>t", group = "Terminal",       mode = "n" },
       { "<leader>g", group = "Git",            mode = "n" },

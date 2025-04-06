@@ -123,8 +123,6 @@ return {
       hl = { fg = "red", bold = true, italic = true },
     }
 
-    vim.keymap.set("n", "<leader>b", "", { desc = "Buffer" })
-
     -- TODO: buffer close left/rifht
     -- TODO: buffer swap
     vim.keymap.set("n", "<leader>bb", function()
