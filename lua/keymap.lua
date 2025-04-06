@@ -36,7 +36,14 @@ vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, si
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, desc = "Move cursor up" })
 
 vim.keymap.set("n", "<leader>w", ":up<cr>", { desc = "Save" })
-vim.keymap.set("n", "<leader>q", ":conf q<cr>", { desc = "Quit window" })
+vim.keymap.set("n", "<leader>q", function()
+  local bufnum = #vim.fn.getbufinfo({ buflisted = 1 })
+  if bufnum == 1 and vim.bo.buflisted then
+    vim.cmd("conf qall")
+  else
+    vim.cmd("conf q")
+  end
+end, { desc = "Quit window" })
 vim.keymap.set("n", "<leader>c", function()
   local bufnum = #vim.fn.getbufinfo({ buflisted = 1 })
   if bufnum > 1 then
