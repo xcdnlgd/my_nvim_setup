@@ -37,8 +37,9 @@ vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, si
 
 vim.keymap.set("n", "<leader>w", ":up<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", function()
-  local bufnum = #vim.fn.getbufinfo({ buflisted = 1 })
-  if bufnum == 1 and vim.bo.buflisted then
+  local listed_buffers = vim.fn.getbufinfo({ buflisted = 1 })
+  local bufnum = #listed_buffers
+  if bufnum == 1 and #listed_buffers[1].windows == 1 then
     vim.cmd("conf qall")
   else
     vim.cmd("conf q")
