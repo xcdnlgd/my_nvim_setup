@@ -23,16 +23,24 @@ local autocmds = {
       end,
     },
   },
+  reset_mid_mapping = {
+    {
+      event = "CursorHold",
+      desc = "Reset mid_mapping for auto_hlsearch",
+      callback = function()
+        mid_mapping = false
+      end,
+    }
+  }
 }
 
 -- auto clear hlsearch
 local ns = vim.api.nvim_create_namespace("auto_hlsearch")
-vim.on_key(function(char)
+vim.on_key(function(key)
   if vim.fn.mode() == "n" and not mid_mapping then
-    local new_hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(char))
+    local new_hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(key))
     if vim.o.hlsearch ~= new_hlsearch then vim.opt.hlsearch = new_hlsearch end
     mid_mapping = true
-    vim.schedule(function() mid_mapping = false end)
   end
 end, ns)
 
