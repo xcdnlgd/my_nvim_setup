@@ -39,7 +39,7 @@ vim.keymap.set("n", "<leader>w", ":up<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", function()
   local listed_buffers = vim.fn.getbufinfo({ buflisted = 1 })
   local bufnum = #listed_buffers
-  if bufnum == 1 and #listed_buffers[1].windows == 1 then
+  if bufnum == 1 and #listed_buffers[1].windows == 1 and vim.api.nvim_get_current_buf() == listed_buffers[1].bufnr then
     vim.cmd("conf qall")
   else
     vim.cmd("conf q")
