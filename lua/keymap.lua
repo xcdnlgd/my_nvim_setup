@@ -37,9 +37,17 @@ vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, si
 
 vim.keymap.set("n", "<leader>w", ":up<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", function()
-  local listed_buffers = vim.fn.getbufinfo({ buflisted = 1 })
-  local bufnum = #listed_buffers
-  if bufnum == 1 and #listed_buffers[1].windows == 1 and vim.api.nvim_get_current_buf() == listed_buffers[1].bufnr then
+  -- quitting the only window for listed_buffers, quit all
+  if vim.bo.buflisted then
+    local listed_buffers = vim.fn.getbufinfo({ buflisted = 1 })
+    local winnum = 0
+    for _, listed_buffer in ipairs(listed_buffers) do
+      winnum = winnum + #listed_buffer.windows
+      if winnum > 1 then
+        vim.cmd("conf q")
+        return
+      end
+    end
     vim.cmd("conf qall")
   else
     vim.cmd("conf q")
