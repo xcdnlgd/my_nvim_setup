@@ -35,11 +35,14 @@ local autocmds = {
 }
 
 -- auto clear hlsearch
-local ns = vim.api.nvim_create_namespace("auto_hlsearch")
+local ns = vim.api.nvim_create_namespace("auto_clear_hlsearch")
 vim.on_key(function(key)
   if vim.fn.mode() == "n" and not mid_mapping then
-    local new_hlsearch = vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(key))
-    if vim.o.hlsearch ~= new_hlsearch then vim.opt.hlsearch = new_hlsearch end
+    if not vim.tbl_contains({ "<CR>", "n", "N", "*", "#", "?", "/" }, vim.fn.keytrans(key)) then
+      if vim.v.hlsearch ~= 0 then
+        vim.cmd.noh()
+      end
+    end
     mid_mapping = true
   end
 end, ns)
