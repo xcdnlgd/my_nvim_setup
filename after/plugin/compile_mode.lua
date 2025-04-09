@@ -14,8 +14,9 @@ vim.g.compile_mode_ins = nil
 local Compile = {}
 Compile.__index = Compile
 
-local REG_GROUPS = '^(.*)[(:](%d+):(%d+)[:)]?'
-local REG_FORMAT = '^.*[(:]%d+:%d+[:)]?'
+local file_row_col = '^(.*)[(:](%d+):(%d+)[:)]?'
+local file_row = '^(.*)[(:](%d+)[:)]?'
+local REG_FORMAT = '^.*[(:]%d+:?%d+[:)]?'
 
 Compile.CM_WIN_OPTS = { split = 'right' }
 --TODO: Get errors list in a quickfix and get that list in the compilation buffer
@@ -67,6 +68,7 @@ function Compile:new()
   cm:set_autocmds()
   vim.g.compile_mode_ins = cm
   cm.win = vim.api.nvim_open_win(cm.buf, false, Compile.CM_WIN_OPTS)
+  vim.wo[cm.win].spell = false
   return cm
 end
 
@@ -123,7 +125,11 @@ function Compile:set_autocmds()
 end
 
 function Compile:set_hl_marks(str, line, hl)
-  local file, row, col = str:match(REG_GROUPS)
+  local file, row, col = str:match(file_row_col)
+  if file == nil then
+    file, row = str:match(file_row)
+    col = ""
+  end
   vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, 0, {
     end_col = #file,
     hl_group = hl,
@@ -179,7 +185,11 @@ function Compile:open_file(line, mode)
   local str_l = vim.api.nvim_buf_get_lines(self.buf, line - 1, line, false)
   local format = str_l[1]:match(REG_FORMAT)
   if format then
-    local file, row, col = format:match(REG_GROUPS)
+    local file, row, col = format:match(file_row_col)
+    if file == nil then
+      file, row = format:match(file_row)
+      col = 0
+    end
     -- Dont know if this is slow
     file = file:gsub("^[^%w./]+", ""):gsub("$[^%w]+", "")
     if mode then
@@ -202,6 +212,10 @@ function Compile:open_file(line, mode)
 end
 
 function Compile:next_error()
+  if #self.errors == 0 then
+    vim.notify("No Error")
+    return
+  end
   if self.cur_error + 1 < #self.errors + 1 then
     self.cur_error = self.cur_error + 1
   else
@@ -216,6 +230,10 @@ function Compile:next_error()
 end
 
 function Compile:prev_error()
+  if #self.errors == 0 then
+    vim.notify("No Error")
+    return
+  end
   if self.cur_error - 1 < 1 then
     self.cur_error = #self.errors
   else
@@ -249,7 +267,7 @@ function Compile:handle_exit_code(code)
       hl_group = "CompilationRed",
     })
 
-    vim.notify("Compilation exit with code: " .. code, vim.log.levels.ERROR)
+    -- vim.notify("Compilation exit with code: " .. code, vim.log.levels.ERROR)
   else
     vim.api.nvim_buf_set_lines(self.buf, -1, -1, false, {
       "",
@@ -260,7 +278,7 @@ function Compile:handle_exit_code(code)
       hl_group = "CompilationGreen",
     })
 
-    vim.notify("Compilation exit with code: " .. code, vim.log.levels.INFO)
+    -- vim.notify("Compilation exit with code: " .. code, vim.log.levels.INFO)
   end
 end
 
@@ -323,6 +341,7 @@ end
 
 local compile = function(input)
   if not input then return end
+  vim.cmd("wa")
   local cm = Compile:new()
   if cm ~= nil then
     cm:call_cmd(input)
