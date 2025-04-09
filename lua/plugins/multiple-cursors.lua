@@ -3,10 +3,12 @@ return {
   version = "*",
   opts = {
     pre_hook = function()
-      require("blink.pairs.mappings").disable()
+      vim.g.minipairs_disable = true
+      -- require("blink.pairs.mappings").disable()
     end,
     post_hook = function()
-      require("blink.pairs.mappings").enable()
+      vim.g.minipairs_disable = true
+      -- require("blink.pairs.mappings").enable()
     end,
   },
   keys = {
