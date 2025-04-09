@@ -1,3 +1,4 @@
+local followed_by = '[ \n\t)%]}\'\"`;,.]'
 return {
   {
     "echasnovski/mini.icons",
@@ -22,4 +23,23 @@ return {
     version = false,
     opts = {}
   },
+  {
+    "echasnovski/mini.pairs",
+    version = false,
+    opts = {
+      mappings = {
+        ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\]' .. followed_by },
+        ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\]' .. followed_by },
+        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\]' .. followed_by },
+
+        [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
+        [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
+        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
+
+        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[ \n\t\"([{,]' .. followed_by, register = { cr = false } },
+        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[ \n\t\'([{,]' .. followed_by, register = { cr = false } },
+        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[ \n\t`([{,]' .. followed_by, register = { cr = false } },
+      },
+    }
+  }
 }
