@@ -53,7 +53,7 @@ vim.keymap.set("n", "<leader>q", function()
     vim.cmd("conf q")
   end
 end, { desc = "Quit window" })
-vim.keymap.set("n", "<leader>c", function()
+vim.keymap.set("n", "<leader>d", function()
   local bufnum = #vim.fn.getbufinfo({ buflisted = 1 })
   if bufnum > 1 then
     vim.cmd("bp|bd #")

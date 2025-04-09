@@ -72,7 +72,7 @@ function Compile:new()
   return cm
 end
 
-vim.keymap.set("n", "<leader>C", ":Compile<cr>", { silent = true, desc = "Compile" })
+vim.keymap.set("n", "<leader>c", ":Compile<cr>", { silent = true, desc = "Compile" })
 
 function Compile:set_keymaps()
   vim.keymap.set('n', '<leader>q', function() vim.api.nvim_command('bd!') end,
