@@ -17,7 +17,7 @@ Compile.__index = Compile
 local REG_GROUPS = '^(.*)[(:](%d+):(%d+)[:)]?'
 local REG_FORMAT = '^.*[(:]%d+:%d+[:)]?'
 
-Compile.CM_WIN_OPTS = { split = 'below' }
+Compile.CM_WIN_OPTS = { split = 'right' }
 --TODO: Get errors list in a quickfix and get that list in the compilation buffer
 
 local function handle_previous_running_instance(cm)
@@ -26,7 +26,7 @@ local function handle_previous_running_instance(cm)
       if not input then return end
       input = input:lower()
       if input == 'y' then
-        cm:kill_cmd(9)         --SIGKILL
+        cm:kill_cmd(9) --SIGKILL
         vim.api.nvim_buf_delete(cm.buf, { force = true })
         vim.cmd('Compile')
       elseif input == 'n' then
@@ -37,6 +37,7 @@ local function handle_previous_running_instance(cm)
     end)
 end
 
+-- TODO: reuse win to avoid blink
 function Compile:new()
   local cm = setmetatable({}, self)
   if vim.g.compile_mode_ins ~= nil then
@@ -48,7 +49,7 @@ function Compile:new()
     end
   end
   -- 1 index :(
-  cm.cur_error = 1
+  cm.cur_error = 0
   cm.errors = {}
   cm.cmd_running = false
   cm.cur_line = 0
@@ -65,30 +66,33 @@ function Compile:new()
   cm:set_keymaps()
   cm:set_autocmds()
   vim.g.compile_mode_ins = cm
+  cm.win = vim.api.nvim_open_win(cm.buf, false, Compile.CM_WIN_OPTS)
   return cm
 end
 
+vim.keymap.set("n", "<leader>C", ":Compile<cr>", { silent = true, desc = "Compile" })
+
 function Compile:set_keymaps()
-  vim.keymap.set('n', '<Esc>', function() vim.api.nvim_command('bd!') end, { buffer = self.buf, silent = true })
-  vim.keymap.set('n', 'q', function() vim.api.nvim_command('bd!') end, { buffer = self.buf, silent = true })
+  vim.keymap.set('n', '<leader>q', function() vim.api.nvim_command('bd!') end,
+    { buffer = self.buf, silent = true, desc = "Quit window" })
 
   vim.keymap.set('n', '<CR>', function()
     local l = vim.api.nvim_win_get_cursor(self.win)[1];
     self:open_file(l)
   end, { buffer = self.buf, silent = true })
 
-  vim.keymap.set('n', '<C-v>', function()
-    local l = vim.api.nvim_win_get_cursor(self.win)[1];
-    self:open_file(l, 'vsplit')
-  end, { buffer = self.buf, silent = true })
+  -- vim.keymap.set('n', '<C-v>', function()
+  --   local l = vim.api.nvim_win_get_cursor(self.win)[1];
+  --   self:open_file(l, 'vsplit')
+  -- end, { buffer = self.buf, silent = true })
 
-  vim.keymap.set('n', '<leader>ne', function()
+  vim.keymap.set('n', ']c', function()
     self:next_error()
-  end, { buffer = self.buf, silent = true })
+  end, { silent = true, desc = "Next compile error" })
 
-  vim.keymap.set('n', '<leader>pe', function()
+  vim.keymap.set('n', '[c', function()
     self:prev_error()
-  end, { buffer = self.buf, silent = true })
+  end, { silent = true, desc = "Previous compile error" })
 
   vim.keymap.set({ 'n', 'i' }, '<C-c>', function()
     self:kill_cmd("SIG")
@@ -106,7 +110,7 @@ function Compile:set_autocmds()
             if not input then return end
             input = input:lower()
             if input == 'y' then
-              self:kill_cmd(9)               --SIGKILL
+              self:kill_cmd(9) --SIGKILL
             elseif input == 'n' then
               print("Not killed")
             else
@@ -183,7 +187,12 @@ function Compile:open_file(line, mode)
     else
       if (vim.api.nvim_win_is_valid(self.mw)) then
         vim.api.nvim_set_current_win(self.mw)
-        vim.api.nvim_command('e ' .. file)
+        local bufnr = vim.fn.bufnr(file)
+        if bufnr > 0 then
+          vim.api.nvim_win_set_buf(self.mw, bufnr)
+        else
+          vim.api.nvim_command('e ' .. file)
+        end
       else
         vim.api.nvim_command('vsplit | e' .. file)
       end
@@ -199,7 +208,10 @@ function Compile:next_error()
     self.cur_error = 1
   end
   local row = self.errors[self.cur_error]
-  vim.fn.cursor(row, 0)
+  vim.api.nvim_win_call(self.win, function()
+    vim.fn.cursor(row, 0)
+    vim.cmd("norm! zt")
+  end)
   self:open_file(row)
 end
 
@@ -210,7 +222,10 @@ function Compile:prev_error()
     self.cur_error = self.cur_error - 1
   end
   local row = self.errors[self.cur_error]
-  vim.fn.cursor(row, 0)
+  vim.api.nvim_win_call(self.win, function()
+    vim.fn.cursor(row, 0)
+    vim.cmd("norm! zt")
+  end)
   self:open_file(row)
 end
 
@@ -249,13 +264,23 @@ function Compile:handle_exit_code(code)
   end
 end
 
+local shell = nil
+local exec = nil
+if vim.fn.has("win32") == 1 then
+  shell = "cmd.exe"
+  exec = "/c"
+else
+  shell = "bash"
+  exec = "-c"
+end
+
 function Compile:call_cmd(cmd)
   self.cmd_running = true
   vim.api.nvim_buf_set_name(self.buf, "*compilation* '" .. cmd .. "'")
   self.stdout = vim.uv.new_pipe()
   self.stderr = vim.uv.new_pipe()
-  self.handle, self.pid = vim.uv.spawn('bash', {
-      args = { '-c', cmd },
+  self.handle, self.pid = vim.uv.spawn(shell, {
+      args = { exec, cmd },
       cwd = vim.uv.cwd(),
       stdio = { nil, self.stdout, self.stderr },
     },
@@ -266,9 +291,9 @@ function Compile:call_cmd(cmd)
         self.stderr:close()
         self:handle_exit_code(code)
         self.cmd_running = false
-        if vim.api.nvim_get_current_win() == self.win then
+        vim.api.nvim_win_call(self.win, function()
           vim.cmd('normal G')
-        end
+        end)
       end)
     end)
 
@@ -296,17 +321,28 @@ function Compile:kill_cmd(signal)
   end
 end
 
-vim.api.nvim_create_user_command('Compile',
-  function()
-    vim.ui.input({ prompt = 'Compile cmd: ', default = vim.g.compile_mode_last_cmd, completion = "shellcmd" },
-      function(input)
-        if not input then return end
-        local cm = Compile:new()
-        if cm ~= nil then
-          cm:call_cmd(input)
-          vim.g.compile_mode_last_cmd = input
-          cm.win = vim.api.nvim_open_win(cm.buf, true, Compile.CM_WIN_OPTS)
-        end
-      end)
-  end, {})
+local compile = function(input)
+  if not input then return end
+  local cm = Compile:new()
+  if cm ~= nil then
+    cm:call_cmd(input)
+    vim.g.compile_mode_last_cmd = input
+  end
+end
 
+vim.api.nvim_create_user_command('Compile',
+  function(opt)
+    if opt.args == "" then
+      vim.ui.input({ prompt = 'Compile cmd: ', default = vim.g.compile_mode_last_cmd, completion = "shellcmd" }, compile)
+    else
+      compile(opt.args)
+    end
+  end, { nargs = "*" }
+)
+
+vim.api.nvim_create_user_command("Recompile",
+  function()
+    local input = vim.g.compile_mode_last_cmd
+    compile(input)
+  end, {}
+)
