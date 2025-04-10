@@ -18,6 +18,13 @@ local file_row_col = '^(.*)[(:](%d+):(%d+)[:)]?'
 local file_row = '^(.*)[(:](%d+)[:)]?'
 local REG_FORMAT = '^.*[(:]%d+:?%d+[:)]?'
 
+-- TODO: used in open_file, is there a better way?
+local groups = {
+  { rust_panic = "thread '.*' panicked at (.*):(%d+):(%d+)" },
+  { file_row_col = file_row_col },
+  { file_row = file_row },
+}
+
 Compile.CM_WIN_OPTS = { split = 'right' }
 --TODO: Get errors list in a quickfix and get that list in the compilation buffer
 
@@ -181,10 +188,20 @@ function Compile:open_file(line, mode)
   local str_l = vim.api.nvim_buf_get_lines(self.buf, line - 1, line, false)
   local format = str_l[1]:match(REG_FORMAT)
   if format then
-    local file, row, col = format:match(file_row_col)
+    local file, row, col
+    for _, v in ipairs(groups) do
+      for _, pattern in pairs(v) do
+        file, row, col = format:match(pattern)
+        if file ~= nil then
+          break
+        end
+      end
+      if file ~= nil then
+        break
+      end
+    end
     if file == nil then
-      file, row = format:match(file_row)
-      col = 0
+      return
     end
     -- Dont know if this is slow
     file = file:gsub("^[^%w./]+", ""):gsub("$[^%w]+", "")
