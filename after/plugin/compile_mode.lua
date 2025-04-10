@@ -199,6 +199,9 @@ function Compile:open_file(line, mode)
       return
     end
     ::matched::
+    if col == nil then
+      col = 0
+    end
     -- Dont know if this is slow
     -- file = file:gsub("^[^%w./]+", ""):gsub("$[^%w]+", "")
     if mode then
