@@ -16,13 +16,11 @@ Compile.__index = Compile
 
 local file_row_col = '^(.*)[(:](%d+):(%d+)[:)]?'
 local file_row = '^(.*)[(:](%d+)[:)]?'
-local REG_FORMAT = '^.*[(:]%d+:?%d+[:)]?'
+local REG_FORMAT = '^.*%.%w+[(:]%d+:?%d+[:)]?'
 
--- TODO: used in open_file, is there a better way?
 local groups = {
-  { rust_panic = "thread '.*' panicked at (.*):(%d+):(%d+)" },
-  { file_row_col = file_row_col },
-  { file_row = file_row },
+  { file_row_col = '([^ ]*)[(:](%d+):(%d+)[:)]?' },
+  { file_row = '([^ ]*)[(:](%d+)[:)]?' },
 }
 
 Compile.CM_WIN_OPTS = { split = 'right' }
@@ -193,18 +191,16 @@ function Compile:open_file(line, mode)
       for _, pattern in pairs(v) do
         file, row, col = format:match(pattern)
         if file ~= nil then
-          break
+          goto matched
         end
-      end
-      if file ~= nil then
-        break
       end
     end
     if file == nil then
       return
     end
+    ::matched::
     -- Dont know if this is slow
-    file = file:gsub("^[^%w./]+", ""):gsub("$[^%w]+", "")
+    -- file = file:gsub("^[^%w./]+", ""):gsub("$[^%w]+", "")
     if mode then
       vim.api.nvim_command(mode .. '| e ' .. file)
     else
