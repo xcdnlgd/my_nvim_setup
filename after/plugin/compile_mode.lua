@@ -22,20 +22,14 @@ Compile.CM_WIN_OPTS = { split = 'right' }
 --TODO: Get errors list in a quickfix and get that list in the compilation buffer
 
 local function handle_previous_running_instance(cm)
-  vim.ui.input({ prompt = "CMD is running, kill it? [Y]es, [N]o : ", default = "Y" },
-    function(input)
-      if not input then return end
-      input = input:lower()
-      if input == 'y' then
-        cm:kill_cmd(9) --SIGKILL
-        vim.api.nvim_buf_delete(cm.buf, { force = true })
-        vim.cmd('Compile')
-      elseif input == 'n' then
-        print("Not killed")
-      else
-        print("Invalid input expected Y or N")
-      end
-    end)
+  local choice = vim.fn.confirm("CMD is running, kill it?", "&Yes\n&No\n")
+  if choice == 1 then
+    cm:kill_cmd(9) --SIGKILL
+    vim.api.nvim_buf_delete(cm.buf, { force = true })
+    vim.cmd('Compile')
+  elseif choice == 2 then
+    print("Not killed")
+  end
 end
 
 -- TODO: reuse win to avoid blink
@@ -72,11 +66,19 @@ function Compile:new()
   return cm
 end
 
-vim.keymap.set("n", "<leader>c", ":Compile<cr>", { silent = true, desc = "Compile" })
+vim.keymap.set("n", "<leader>c", ":Compile<cr>", { desc = "Compile" })
 
 function Compile:set_keymaps()
   vim.keymap.set('n', '<leader>q', function() vim.api.nvim_command('bd!') end,
     { buffer = self.buf, silent = true, desc = "Quit window" })
+  vim.keymap.set('n', 'q', function() vim.api.nvim_command('bd!') end,
+    { buffer = self.buf, silent = true, desc = "Quit window" })
+  vim.keymap.set('n', '<esc>', function() vim.api.nvim_command('bd!') end,
+    { buffer = self.buf, silent = true, desc = "Quit window" })
+
+  -- -- disable bnext and bprev
+  vim.keymap.set("n", "[b", "", { buffer = self.buf })
+  vim.keymap.set("n", "]b", "", { buffer = self.buf })
 
   vim.keymap.set('n', '<CR>', function()
     local l = vim.api.nvim_win_get_cursor(self.win)[1];
@@ -107,18 +109,12 @@ function Compile:set_autocmds()
     buffer = self.buf,
     callback = function()
       if self.cmd_running then
-        vim.ui.input({ prompt = "CMD is running, kill it? [Y]es, [N]o : ", default = "Y" },
-          function(input)
-            if not input then return end
-            input = input:lower()
-            if input == 'y' then
-              self:kill_cmd(9) --SIGKILL
-            elseif input == 'n' then
-              print("Not killed")
-            else
-              print("Invalid input expected Y or N")
-            end
-          end)
+        local choice = vim.fn.confirm("CMD is running, kill it?", "&Yes\n&No\n")
+        if choice == 1 then
+          self:kill_cmd(9) --SIGKILL
+        elseif choice == 2 then
+          print("Not killed")
+        end
       end
     end
   })
@@ -341,9 +337,9 @@ end
 
 local compile = function(input)
   if not input then return end
-  vim.cmd("wa")
   local cm = Compile:new()
   if cm ~= nil then
+    vim.cmd("wa")
     cm:call_cmd(input)
     vim.g.compile_mode_last_cmd = input
   end
@@ -352,7 +348,14 @@ end
 vim.api.nvim_create_user_command('Compile',
   function(opt)
     if opt.args == "" then
-      vim.ui.input({ prompt = 'Compile cmd: ', default = vim.g.compile_mode_last_cmd, completion = "shellcmd" }, compile)
+      local input = vim.fn.input({
+        prompt = 'Compile cmd: ',
+        default = vim.g.compile_mode_last_cmd,
+        completion = "shellcmd",
+      })
+      if input ~= "" then
+        compile(input)
+      end
     else
       compile(opt.args)
     end
