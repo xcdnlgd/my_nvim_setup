@@ -282,7 +282,14 @@ return {
     local TabpageClose = {
       provider = " " .. require("icons")["TabClose"] .. " ",
       hl = "TabLine",
-      -- TODO: click
+      on_click = {
+        callback = function()
+          vim.schedule(function()
+            vim.cmd.tabclose()
+          end)
+        end,
+        name = "heirline_tabline_close_tab_callback",
+      },
     }
 
     local TabPages = {
