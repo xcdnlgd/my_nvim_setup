@@ -112,5 +112,7 @@ vim.keymap.set("v", "<S-Tab>", "<gv", { desc = "Unindent line" })
 vim.keymap.set("v", "<Tab>", ">gv", { desc = "Indent line" })
 
 vim.keymap.set('i', '<C-Del>', "<C-o>dw", opts)
-vim.keymap.set('i', '<C-BS>', '<C-w>', { remap = true, silent = true }) -- only work in gui app
-vim.keymap.set('i', '<C-h>', '<C-w>', { remap = true, silent = true })  -- to map <C-BS> <C-w> in windows terminal
+vim.keymap.set('i', '<C-BS>', '<C-w>', { silent = true }) -- only work in gui app
+vim.keymap.set('i', '<C-h>', '<C-w>', { silent = true }) -- to map <C-BS> <C-w> in windows terminal
+
+vim.cmd("cnoremap <C-h> <C-w>")
