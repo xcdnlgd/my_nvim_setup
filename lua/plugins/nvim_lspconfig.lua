@@ -10,12 +10,22 @@ return {
           "emmet_ls", "jsonls" }
 
         local capabilities = require('blink.cmp').get_lsp_capabilities()
-
+        table.insert(require("bridge").no_auto_lsp_setup, "ruff")
         local skipped = {}
         for _, lsp in ipairs(require("bridge").no_auto_lsp_setup) do
           -- vim.notify(lsp .. "skipped")
           skipped[lsp] = function() end
         end
+        -- TODO: put it to the general setup
+        require('lspconfig').ruff.setup {
+          init_options = {
+            settings = {
+              lint = {
+                ignore = { "F403", "F405" }
+              }
+            }
+          }
+        }
 
         require("mason-lspconfig").setup_handlers(vim.tbl_deep_extend("error", {
           -- The first entry (without a key) will be the default handler
