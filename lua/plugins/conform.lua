@@ -1,4 +1,8 @@
-vim.keymap.set({ "n", "v" }, "<leader>lf", function() require("conform").format() end, { desc = "Format buffer" })
+vim.keymap.set({ "n" }, "<leader>lf", function() require("conform").format() end, { desc = "Format buffer" })
+vim.keymap.set({ "v" }, "<leader>lf", function()
+  require("conform").format()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, true, true), "n", true)
+end, { desc = "Format buffer" })
 return {
   "stevearc/conform.nvim",
   opts = {
