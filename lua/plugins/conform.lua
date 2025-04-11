@@ -7,6 +7,7 @@ return {
       rust = { "rustfmt" },
       html = { "prettierd" },
       css = { "prettierd" },
+      yaml = { "prettierd" },
     },
     default_format_opts = {
       lsp_format = "fallback",
