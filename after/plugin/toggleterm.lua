@@ -12,7 +12,7 @@ local state = {
   }
 }
 
-local exec = vim.fn.has("win32") == 1 and "\r\n" or "\n"
+local exec = vim.fn.has("win32") == 1 and "\r" or "\n"
 
 local open_float_terminal = function(opts)
   opts = opts or {}
