@@ -34,8 +34,13 @@ return {
       auto_install = vim.fn.executable "git" == 1 and vim.fn.executable "tree-sitter" == 1, -- only enable auto install if `tree-sitter` cli is installed
       highlight = { enable = true },
       incremental_selection = { enable = true },
+      indent = {
+        enable = true,
+        disable = { "c", "cpp" }
+      },
       ensure_installed = {
-        "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc", "rust", "toml", "cpp", "html", "css", "json", "jsonc", "yaml"
+        "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc", "rust", "toml", "cpp",
+        "html", "css", "json", "jsonc", "yaml"
       },
       textobjects = {
         select = {
