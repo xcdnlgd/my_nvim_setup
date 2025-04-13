@@ -74,6 +74,10 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })
 
+-- preserve cursor position
+-- TODO: see if I really want this
+vim.keymap.set("v", "y", "ygv<esc>", { desc = "Yank" })
+
 vim.keymap.set("v", "p", "P", opts)
 -- don't change the clipboard
 vim.keymap.set("v", "d", '"_d', opts)
@@ -113,6 +117,6 @@ vim.keymap.set("v", "<Tab>", ">gv", { desc = "Indent line" })
 
 vim.keymap.set('i', '<C-Del>', "<C-o>dw", opts)
 vim.keymap.set('i', '<C-BS>', '<C-w>', { silent = true }) -- only work in gui app
-vim.keymap.set('i', '<C-h>', '<C-w>', { silent = true }) -- to map <C-BS> <C-w> in windows terminal
+vim.keymap.set('i', '<C-h>', '<C-w>', { silent = true })  -- to map <C-BS> <C-w> in windows terminal
 
 vim.cmd("cnoremap <C-h> <C-w>")
