@@ -10,6 +10,9 @@ return {
       preset = 'super-tab',
       ["<C-k>"] = { 'select_prev', 'fallback' },
       ["<C-j>"] = { 'select_next', 'fallback' },
+      ["<C-n>"] = { 'snippet_forward', 'fallback' },
+      ["<C-p>"] = { 'snippet_backward', 'fallback' },
+      ["<Tab>"] = { 'select_and_accept', 'fallback' }
     },
     signature = {
       enabled = true,
