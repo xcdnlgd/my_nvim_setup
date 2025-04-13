@@ -483,6 +483,8 @@ return {
         end
       end,
       provider = function(self)
+        -- NOTE: if search is nil, just search once.
+        -- after setup, search once, other wise vim.v.hlsearch == 1 on startup
         local search = self.search
         return require("icons").Search ..
             " " .. string.format("[%d/%d]", search.current, math.min(search.total, search.maxcount))
