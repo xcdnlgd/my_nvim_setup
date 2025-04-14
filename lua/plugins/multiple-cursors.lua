@@ -7,7 +7,7 @@ return {
       -- require("blink.pairs.mappings").disable()
     end,
     post_hook = function()
-      vim.g.minipairs_disable = true
+      vim.g.minipairs_disable = false
       -- require("blink.pairs.mappings").enable()
     end,
   },
