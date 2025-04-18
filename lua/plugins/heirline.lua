@@ -91,7 +91,7 @@ return {
           if vim.api.nvim_get_option_value("buftype", { buf = self.bufnr }) == "terminal" then
             return " " .. require("icons").Terminal .. " "
           else
-            return require("icons").FileReadOnly
+            return " " .. require("icons").FileReadOnly
           end
         end,
         hl = { fg = "orange" },
