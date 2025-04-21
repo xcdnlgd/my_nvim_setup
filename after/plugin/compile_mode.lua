@@ -99,9 +99,9 @@ function Compile:set_keymaps()
     self:next_error()
   end, { silent = true, desc = "Next compile error" })
 
-  vim.keymap.set('n', '[c', function()
-    self:prev_error()
-  end, { silent = true, desc = "Previous compile error" })
+  -- vim.keymap.set('n', '[c', function()
+  --   self:prev_error()
+  -- end, { silent = true, desc = "Previous compile error" })
 
   vim.keymap.set({ 'n', 'i' }, '<C-c>', function()
     self:kill_cmd("SIG")
