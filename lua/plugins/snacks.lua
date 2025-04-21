@@ -9,27 +9,41 @@ return {
       scope = { char = "▏" },
       animate = { enabled = false },
     },
-    input = {
-      icon = "",
-      win = {
-        style = {
-          width = 15,
-          title_pos = "left",
-          relative = "cursor",
-          row = -1,
-          col = function() -- relative to word
-            local line = vim.fn.line(".")
-            local col = vim.fn.col(".")
-            local start_pos = vim.fn.searchpos("\\<", "cbWn", line)
-            local offset = -2
-            if start_pos[1] == line then
-              offset = offset - (col - start_pos[2])
-            end
-            return offset
-          end,
-        }
-      }
-    },
+    -- input is buggy, use dressing.nvim
+    -- input = {
+    --   icon = "",
+    --   win = {
+    --     style = {
+    --       width = 15,
+    --       title_pos = "left",
+    --       relative = "cursor",
+    --       row = -1,
+    --       col = function() -- relative to word
+    --         local line = vim.fn.line(".")
+    --         local col = vim.fn.col(".")
+    --         local start_pos = vim.fn.searchpos("\\<", "cbWn", line)
+    --         local offset = -2
+    --         if start_pos[1] == line then
+    --           offset = offset - (col - start_pos[2])
+    --         end
+    --         return offset
+    --       end,
+    --       keys = {
+    --         n_esc = { "<esc>", { "cancel" }, mode = "n", expr = true },
+    --         i_esc = { "<esc>", { "stopinsert" }, mode = "i", expr = true },
+    --         i_cr = { "<cr>", { "confirm" }, mode = { "i", "n" }, expr = true },
+    --         i_tab = { "<tab>", { "<tab>" }, mode = "i", expr = true },
+    --         i_ctrl_w = { "<c-w>", "<c-s-w>", mode = "i", expr = true },
+    --         i_ctrl_h = { "<c-h>", "<c-s-w>", mode = "i", expr = true },
+    --         i_ctrl_del = { "<c-del>", "<c-o>dw", mode = "i", expr = true },
+    --         n_u = { "u", { ":undo<cr>" }, mode = "n", expr = true, silent = true },
+    --         i_up = { "<up>", { "hist_up" }, mode = { "i", "n" } },
+    --         i_down = { "<down>", { "hist_down" }, mode = { "i", "n" } },
+    --         q = "cancel",
+    --       },
+    --     }
+    --   }
+    -- },
     picker = {
       ui_select = true
     },
