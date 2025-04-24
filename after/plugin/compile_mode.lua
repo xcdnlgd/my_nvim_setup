@@ -292,6 +292,8 @@ function Compile:handle_exit_code(code)
 
     -- vim.notify("Compilation exit with code: " .. code, vim.log.levels.INFO)
   end
+  vim.api.nvim_set_option_value("modifiable", false, { buf = self.buf })
+  vim.api.nvim_set_option_value("readonly", true, { buf = self.buf })
 end
 
 local shell = nil
