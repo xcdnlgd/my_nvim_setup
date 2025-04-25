@@ -14,13 +14,10 @@ vim.g.compile_mode_ins = nil
 local Compile = {}
 Compile.__index = Compile
 
-local file_row_col = '^(.*)[(:](%d+):(%d+)[:)]?'
-local file_row = '^(.*)[(:](%d+)[:)]?'
-local REG_FORMAT = '^.*%.%w+[(:]%d+:?%d+[:)]?'
-
 local groups = {
-  { file_row_col = '([^ ]*)[(:](%d+):(%d+)[:)]?' },
-  { file_row = '([^ ]*)[(:](%d+)[:)]?' },
+  { msvc = '([^ %[]*%.%w+)[(](%d+)[)]' },
+  { file_row_col = '([^ %[]*):(%d+):(%d+):?' },
+  { file_row = '([^ %[]*):(%d+):?' },
 }
 
 Compile.CM_WIN_OPTS = { split = 'right' }
@@ -125,50 +122,39 @@ function Compile:set_autocmds()
   })
 end
 
-function Compile:set_hl_marks(str, line, hl)
-  local file, row, col = str:match(file_row_col)
-  if file == nil then
-    file, row = str:match(file_row)
-    col = ""
+local get_file_row_col = function(str)
+  local file, row, col
+  for _, v in ipairs(groups) do
+    for _, pattern in pairs(v) do
+      file, row, col = str:match(pattern)
+      if file ~= nil then
+        return file, row, col
+      end
+    end
   end
-  vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, 0, {
-    end_col = #file,
-    hl_group = hl,
-  })
-  -- file   :
-  vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, #file + 1, {
-    end_col = #file + 1 + #row,
-    hl_group = "CompilationYellow",
-  })
-  -- file   :   row    :
-  vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, #file + 1 + #row + 1, {
-    end_col = #file + 1 + #row + 1 + #col,
-    hl_group = "CompilationGreen",
-  })
-
-  vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, 0, {
-    end_col = #file + 1 + #row + 1 + #col,
-    hl_group = "Underline"
-  })
+  return file, row, col
 end
 
 function Compile:handle_line(data)
   -- Cant use '\n' symbol in buf_set_lines
   local lines = vim.split(data, '\n')
-  for _, v in ipairs(lines) do
-    if v ~= '' then
-      vim.api.nvim_buf_set_lines(self.buf, -1, -1, false, { v })
+  for _, str in ipairs(lines) do
+    if str ~= '' then
+      vim.api.nvim_buf_set_lines(self.buf, -1, -1, false, { str })
       self.cur_line = self.cur_line + 1
       if vim.api.nvim_get_current_win() == self.win then
         vim.api.nvim_win_set_cursor(self.win, { self.cur_line + 1, 0 })
       end
 
       -- Search for file:row:col format
-      local fmt = v:match(REG_FORMAT)
-      if fmt then
+      local file, row, col = get_file_row_col(str)
+      if file then
+        if col == nil then
+          col = ""
+        end
         table.insert(self.errors, self.cur_line + 1)
         local hl = "CompilationRed"
-        local low = v:lower()
+        local low = str:lower()
 
         if low:match("warning") then
           hl = "CompilationBrown"
@@ -176,7 +162,28 @@ function Compile:handle_line(data)
           hl = "CopilationGreen"
         end
 
-        self:set_hl_marks(fmt, self.cur_line, hl)
+        local line = self.cur_line
+        local front, _ = str:find(file, 1, true)
+        front = front - 1
+        vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, front, {
+          end_col = front + #file,
+          hl_group = hl,
+        })
+        -- file   :
+        vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, front + #file + 1, {
+          end_col = front + #file + 1 + #row,
+          hl_group = "CompilationYellow",
+        })
+        -- file   :   row    :
+        vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, front + #file + 1 + #row + 1, {
+          end_col = front + #file + 1 + #row + 1 + #col,
+          hl_group = "CompilationGreen",
+        })
+
+        vim.api.nvim_buf_set_extmark(self.buf, self.ns, line, front, {
+          end_col = front + #file + 1 + #row + 1 + #col,
+          hl_group = "Underline"
+        })
       end
     end
   end
@@ -184,43 +191,30 @@ end
 
 function Compile:open_file(line, mode)
   local str_l = vim.api.nvim_buf_get_lines(self.buf, line - 1, line, false)
-  local format = str_l[1]:match(REG_FORMAT)
-  if format then
-    local file, row, col
-    for _, v in ipairs(groups) do
-      for _, pattern in pairs(v) do
-        file, row, col = format:match(pattern)
-        if file ~= nil then
-          goto matched
-        end
-      end
-    end
-    if file == nil then
-      return
-    end
-    ::matched::
-    if col == nil then
-      col = 0
-    end
-    -- Dont know if this is slow
-    -- file = file:gsub("^[^%w./]+", ""):gsub("$[^%w]+", "")
-    if mode then
-      vim.api.nvim_command(mode .. '| e ' .. file)
-    else
-      if (vim.api.nvim_win_is_valid(self.mw)) then
-        vim.api.nvim_set_current_win(self.mw)
-        local bufnr = vim.fn.bufnr(file)
-        if bufnr > 0 then
-          vim.api.nvim_win_set_buf(self.mw, bufnr)
-        else
-          vim.api.nvim_command('e ' .. file)
-        end
-      else
-        vim.api.nvim_command('vsplit | e' .. file)
-      end
-    end
-    vim.fn.cursor(row, col)
+  local file, row, col = get_file_row_col(str_l[1])
+  if file == nil then
+    return
   end
+  if col == nil then
+    col = 0
+  end
+  if mode then
+    vim.api.nvim_command(mode .. '| e ' .. file)
+  else
+    if (vim.api.nvim_win_is_valid(self.mw)) then
+      vim.api.nvim_set_current_win(self.mw)
+      local bufnr = vim.fn.bufnr(file)
+      if bufnr > 0 then
+        vim.api.nvim_win_set_buf(self.mw, bufnr)
+      else
+        vim.api.nvim_command('e ' .. file)
+      end
+    else
+      vim.api.nvim_command('vsplit | e' .. file)
+    end
+  end
+  vim.fn.cursor(row, col)
+  vim.cmd("norm! zz")
 end
 
 function Compile:next_error()
@@ -357,7 +351,7 @@ local compile = function(input)
   if not input then return end
   local cm = Compile:new()
   if cm ~= nil then
-    vim.cmd("wa")
+    vim.cmd("silent wa")
     cm:call_cmd(input)
     vim.g.compile_mode_last_cmd = input
   end
