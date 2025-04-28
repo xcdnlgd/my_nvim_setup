@@ -36,7 +36,7 @@ return {
       incremental_selection = { enable = true },
       indent = {
         enable = true,
-        disable = { "c", "cpp" }
+        disable = { "c", "cpp", "rust" }
       },
       ensure_installed = {
         "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc", "rust", "toml", "cpp",
