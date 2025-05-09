@@ -85,6 +85,8 @@ local open_bottom_terminal = function(opts)
         { desc = "Move to above split", buffer = buf })
       vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
         { desc = "Move to above split", buffer = buf })
+      vim.keymap.set("n", "[b", "", { buffer = buf })
+      vim.keymap.set("n", "]b", "", { buffer = buf })
       vim.api.nvim_create_autocmd("WinEnter", {
         buffer = buf,
         callback = function()
