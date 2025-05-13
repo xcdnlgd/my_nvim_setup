@@ -8,16 +8,16 @@ return {
       opts = function(_, opts)
         opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "ruff", "html", "cssls",
           "emmet_ls", "jsonls", "yamlls", "gopls" }
+        opts.automatic_enable = {
+          exclude = {
+            "rust_analyzer",
+          }
+        }
 
-        local capabilities = require('blink.cmp').get_lsp_capabilities()
-        table.insert(require("bridge").no_auto_lsp_setup, "ruff")
-        local skipped = {}
-        for _, lsp in ipairs(require("bridge").no_auto_lsp_setup) do
-          -- vim.notify(lsp .. "skipped")
-          skipped[lsp] = function() end
-        end
-        -- TODO: put it to the general setup
-        require('lspconfig').ruff.setup {
+        vim.lsp.config('clangd', {
+          filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+        })
+        vim.lsp.config("ruff", {
           init_options = {
             settings = {
               lint = {
@@ -25,41 +25,28 @@ return {
               }
             }
           }
-        }
-
-        require("mason-lspconfig").setup_handlers(vim.tbl_deep_extend("error", {
-          -- The first entry (without a key) will be the default handler
-          -- and will be called for each installed server that doesn't have
-          -- a dedicated handler.
-          function(server_name) -- default handler (optional)
-            require("lspconfig")[server_name].setup {
-              capabilities = capabilities,
-              settings = {
-                basedpyright = {
-                  analysis = {
-                    typeCheckingMode = "off",
-                    autoImportCompletions = true,
-                    diagnosticSeverityOverrides = {
-                      reportUndefinedVariable = "error",
-                      reportUnusedImport = "information",
-                      reportUnusedFunction = "information",
-                      reportUnusedVariable = "information",
-                      reportGeneralTypeIssues = "none",
-                      reportOptionalMemberAccess = "none",
-                      reportOptionalSubscript = "none",
-                      reportPrivateImportUsage = "none",
-                    },
-                  },
+        })
+        vim.lsp.config("basedpyright", {
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = "off",
+                autoImportCompletions = true,
+                diagnosticSeverityOverrides = {
+                  reportUndefinedVariable = "error",
+                  reportUnusedImport = "information",
+                  reportUnusedFunction = "information",
+                  reportUnusedVariable = "information",
+                  reportGeneralTypeIssues = "none",
+                  reportOptionalMemberAccess = "none",
+                  reportOptionalSubscript = "none",
+                  reportPrivateImportUsage = "none",
                 },
-              }
-            }
-          end,
-          -- Next, you can provide a dedicated handler for specific servers.
-          -- For example, a handler override for the `rust_analyzer`:
-          -- ["rust_analyzer"] = function ()
-          --   require("rust-tools").setup {}
-          -- end
-        }, skipped))
+              },
+            },
+          }
+        })
+
       end,
     },
   },

@@ -1,4 +1,3 @@
-table.insert(require("bridge").no_auto_lsp_setup, "rust_analyzer")
 vim.g.rustaceanvim = {
   -- Plugin configuration
   tools = {
