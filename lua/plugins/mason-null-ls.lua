@@ -6,7 +6,7 @@ return {
     "nvimtools/none-ls.nvim",
   },
   opts = {
-    ensure_installed = { "prettierd" },
+    ensure_installed = { "prettierd", "goimports" },
     methods = {
       diagnostics = true,
       formatting = false, -- use conform.nvim
