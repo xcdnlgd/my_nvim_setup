@@ -9,7 +9,6 @@ vim.api.nvim_create_augroup("Compile", { clear = true })
 
 -- TODO: terminal buffer has more lines than it needed
 -- TODO: custom "[Process exited 1]", which is added by nvim after TermClose autocmd
--- XXX: replace [Process exited 1] using vim.defer_fn(fn,50)
 -- TODO: handle lines on the fly rather than in TermClose autocmd, maybe?
 
 local groups = {
@@ -146,6 +145,9 @@ local function compile(cmd)
         if str == "" then
           goto continue
         end
+        if str == "[Process exited 1]" then
+          vim.notify("detected")
+        end
         -- Search for file:row:col format
         local file, row, col = get_file_row_col(str)
         if file then
@@ -187,50 +189,6 @@ local function compile(cmd)
         end
         ::continue::
       end
-
-      vim.defer_fn(function()
-        vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
-        local comp = "Compilation"
-        local fin = " finished"
-        lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-        local l = #lines -- find [Process exited %d]
-        for i = #lines, 1, -1 do
-          if lines[i]:match("Process exited") then
-            l = i
-            break
-          end
-        end
-        local code = state.exit_code
-        if code ~= 0 then
-          local ab = " abnormaly "
-          vim.api.nvim_buf_set_lines(buf, l - 1, l, false, {
-            "",
-            comp .. fin .. ab .. 'with code ' .. code .. ' at ' .. os.date()
-          })
-          vim.api.nvim_buf_set_extmark(buf, state.ns, l, #comp + #fin, {
-            end_col = #comp + #fin + #ab,
-            hl_group = "CompilationRed",
-          })
-          vim.api.nvim_buf_set_extmark(buf, state.ns, l, #comp + #fin + #ab + 10, {
-            end_col = #comp + #fin + #ab + 10 + #tostring(code),
-            hl_group = "CompilationRed",
-          })
-
-          -- vim.notify("Compilation exit with code: " .. code, vim.log.levels.ERROR)
-        else
-          vim.api.nvim_buf_set_lines(buf, l, l, false, {
-            "",
-            comp .. fin .. ' at ' .. os.date()
-          })
-          vim.api.nvim_buf_set_extmark(buf, state.ns, l, #comp, {
-            end_col = #comp + #fin,
-            hl_group = "CompilationGreen",
-          })
-
-          -- vim.notify("Compilation exit with code: " .. code, vim.log.levels.INFO)
-        end
-        vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
-      end, 50)
     end
   })
 end
