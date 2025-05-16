@@ -99,6 +99,12 @@ local open_bottom_terminal = function(opts)
 end
 
 vim.api.nvim_create_user_command("ToggleTerm", function()
+  if vim.api.nvim_win_is_valid(state[state.current].win) then
+    local winbuf = vim.api.nvim_win_get_buf(state[state.current].win)
+    if winbuf ~= state[state.current].buf then
+      state[state.current].win = -1
+    end
+  end
   if state.current == "floating" then
     if not vim.api.nvim_win_is_valid(state.floating.win) then
       state.floating = open_float_terminal({ buf = state.floating.buf })
@@ -117,6 +123,12 @@ vim.api.nvim_create_user_command("ToggleTerm", function()
 end, {})
 
 vim.api.nvim_create_user_command("TermExec", function(v)
+  if vim.api.nvim_win_is_valid(state.bottom.win) then
+    local winbuf = vim.api.nvim_win_get_buf(state.bottom.win)
+    if winbuf ~= state.bottom.buf then
+      state.bottom.win = -1
+    end
+  end
   if not vim.api.nvim_win_is_valid(state.bottom.win) then
     state.bottom = open_bottom_terminal({ buf = state.bottom.buf, enter = false })
     vim.api.nvim_win_call(state.bottom.win, function()
