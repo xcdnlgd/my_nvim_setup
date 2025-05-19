@@ -95,12 +95,80 @@ vim.keymap.set("n", "c", '"_c', opts)
 vim.keymap.set("n", "C", '"_C', opts)
 
 -- move line up and down
-vim.keymap.set("n", "<M-k>", ":m -2<cr>==", opts) -- == is for auto indent
-vim.keymap.set("n", "<M-j>", ":m +1<cr>==", opts)
-vim.keymap.set("i", "<M-k>", "<esc>:m -2<cr>==gi", opts)
-vim.keymap.set("i", "<M-j>", "<esc>:m +1<cr>==gi", opts)
-vim.keymap.set("v", "<M-k>", ":m '<-2<cr><esc>gv=gv", opts) -- <esc> to get rid of n lines moved hint
-vim.keymap.set("v", "<M-j>", ":m '>+1<cr><esc>gv=gv", opts)
+vim.keymap.set("n", "<M-k>", function()
+  if vim.fn.line(".") == 1 then
+    -- line already the first line
+    vim.api.nvim_buf_set_lines(0, 1, 1, false, { "" })
+    return
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
+    ":m -2<cr>",
+    true, false, true
+  ), "n", false)
+end, opts)
+vim.keymap.set("n", "<M-j>", function()
+  if vim.fn.line(".") >= vim.fn.line("$") then
+    -- line already the last line
+    vim.api.nvim_buf_set_lines(0, -2, -2, false, { "" })
+    return
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
+    ":m +1<cr>",
+    true, false, true
+  ), "n", false)
+end, opts)
+vim.keymap.set("i", "<M-k>", function()
+  if vim.fn.line(".") == 1 then
+    vim.api.nvim_buf_set_lines(0, 1, 1, false, { "" })
+    return
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
+    "<esc>:m -2<cr>gi",
+    true, false, true
+  ), "i", false)
+end, opts)
+vim.keymap.set("i", "<M-j>", function()
+  if vim.fn.line(".") >= vim.fn.line("$") then
+    vim.api.nvim_buf_set_lines(0, -2, -2, false, { "" })
+    return
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
+    "<esc>:m +1<cr>gi",
+    true, false, true
+  ), "i", false)
+end, opts)
+local function get_visual_start_end()
+  -- vim.fn.line("'<"|"'>") fail on startup
+  local start_line = vim.fn.line("v")
+  local end_line = vim.fn.line(".")
+  if start_line > end_line then
+    local temp = start_line
+    start_line = end_line
+    end_line = temp
+  end
+  return start_line, end_line
+end
+vim.keymap.set("v", "<M-k>", function()
+  local start_line, end_line = get_visual_start_end()
+  if start_line == 1 then
+    vim.api.nvim_buf_set_lines(0, end_line, end_line, false, { "" })
+    return
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
+    ":m '<-2<cr><esc>gv", -- <esc> to get rid of n lines moved hint
+    true, false, true
+  ), "v", false)
+end, opts)
+vim.keymap.set("v", "<M-j>", function()
+  local _, end_line = get_visual_start_end()
+  if end_line == vim.fn.line("$") then
+    vim.api.nvim_buf_set_lines(0, -1, -1, false, { "" })
+  end
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(
+    ":m '>+1<cr><esc>gv",
+    true, false, true
+  ), "v", false)
+end, opts)
 
 -- duplicate line up and down
 vim.keymap.set("n", "<M-K>", "<cmd>t.<cr>k", opts)
