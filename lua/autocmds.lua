@@ -31,7 +31,16 @@ local autocmds = {
         mid_mapping = false
       end,
     }
-  }
+  },
+  redraw_status = {
+    {
+      event = { "CursorHold", "CursorHoldI" },
+      desc = "Redraw status",
+      callback = function()
+        vim.schedule(vim.cmd.redrawstatus)
+      end
+    },
+  },
 }
 
 -- auto clear hlsearch
