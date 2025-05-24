@@ -10,6 +10,9 @@ return {
       vim.g.minipairs_disable = false
       -- require("blink.pairs.mappings").enable()
     end,
+    custom_key_maps = {
+      { "n", "|", function() require("multiple-cursors").align() end },
+    },
   },
   keys = {
     {
