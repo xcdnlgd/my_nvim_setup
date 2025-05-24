@@ -363,6 +363,13 @@ return {
 
     -- uses lewis6991/gitsigns.nvim
     local Git = {
+      update = {
+        "User",
+        pattern = "GitSignsUpdate",
+        callback = vim.schedule_wrap(function()
+          vim.cmd("redrawstatus")
+        end),
+      },
       condition = conditions.is_git_repo,
 
       init = function(self)

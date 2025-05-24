@@ -20,8 +20,6 @@ return {
         untracked = { text = require("icons").GitSign },
       },
       on_attach = function(bufnr)
-        vim.keymap.set({ "n", "v" }, "<leader>g", "", { buffer = bufnr, desc = "Git" })
-
         vim.keymap.set("n", "<leader>gl", function() require("gitsigns").blame_line() end,
           { buffer = bufnr, desc = "View Git blame" })
         vim.keymap.set("n", "<leader>gL", function() require("gitsigns").blame_line { full = true } end,
