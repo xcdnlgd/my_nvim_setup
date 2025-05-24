@@ -54,6 +54,7 @@ vim.on_key(function(key)
     end
     mid_mapping = true
   end
+  vim.schedule(vim.cmd.redrawstatus)
 end, ns)
 
 local function set_jsonc_filetype()
