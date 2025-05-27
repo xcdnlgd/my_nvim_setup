@@ -1,4 +1,11 @@
 local followed_by = '[%s)%]}\'\"`;,.]'
+_G.cursorword_blocklist = function()
+  local filetype = vim.bo.filetype
+  local blocklist = {"neo-tree"}
+  vim.b.minicursorword_disable = vim.tbl_contains(blocklist, filetype)
+end
+-- Make sure to add this autocommand *before* calling module's `setup()`.
+vim.cmd('au CursorMoved * lua _G.cursorword_blocklist()')
 return {
   {
     "echasnovski/mini.icons",
