@@ -155,6 +155,45 @@ return {
       vim.cmd.redrawtabline()
     end, { desc = "Delete a buffer" })
 
+    vim.keymap.set("n", "<leader>bl", function()
+      local current_buf = vim.api.nvim_get_current_buf()
+      if not vim.bo[current_buf].buflisted then
+        return
+      end
+      local start_to_delete = false
+      local bufs = vim.api.nvim_list_bufs()
+      for _, buf in ipairs(bufs) do
+        local valid = vim.api.nvim_buf_is_valid(buf)
+        if valid and vim.bo[buf].buflisted then
+          if start_to_delete then
+            vim.cmd(string.format("bd %d", buf))
+          end
+          if buf == current_buf then
+            start_to_delete = true
+          end
+        end
+      end
+      vim.cmd.redrawtabline()
+    end, { desc = "Delete buffers after current" })
+
+    vim.keymap.set("n", "<leader>bh", function()
+      local current_buf = vim.api.nvim_get_current_buf()
+      if not vim.bo[current_buf].buflisted then
+        return
+      end
+      local bufs = vim.api.nvim_list_bufs()
+      for _, buf in ipairs(bufs) do
+        local valid = vim.api.nvim_buf_is_valid(buf)
+        if valid and vim.bo[buf].buflisted then
+          if buf == current_buf then
+            return
+          end
+          vim.cmd(string.format("bd %d", buf))
+        end
+      end
+      vim.cmd.redrawtabline()
+    end, { desc = "Delete buffers before current" })
+
     -- Here the filename block finally comes together
     local TablineFileNameBlock = {
       init = function(self)
