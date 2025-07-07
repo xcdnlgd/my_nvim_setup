@@ -74,25 +74,16 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })
 
+vim.keymap.set("n", "y", '"+y', { desc = "Yank" })
+vim.keymap.set("n", "Y", '"+Y', { desc = "Yank" })
+vim.keymap.set("n", "p", '"+p', { desc = "Paste" })
+vim.keymap.set("n", "P", '"+P', { desc = "Paste" })
+vim.keymap.set("v", "p", '"+p', { desc = "Paste" })
+vim.keymap.set("v", "x", '"+x', { desc = "Cut" })
+
 -- preserve cursor position
 -- TODO: see if I really want this
-vim.keymap.set("v", "y", "ygv<esc>", { desc = "Yank" })
-
-vim.keymap.set("v", "p", "P", opts)
--- don't change the clipboard
-vim.keymap.set("v", "d", '"_d', opts)
-vim.keymap.set("v", "D", '"_D', opts)
--- keymap("v", 's', '"_s', opts)
-vim.keymap.set("v", "c", '"_c', opts)
-vim.keymap.set("v", "C", '"_C', opts)
-vim.keymap.set("n", "d", '"_d', opts)
-vim.keymap.set("n", "D", '"_D', opts)
-vim.keymap.set("n", "x", '"_x', opts)
-vim.keymap.set("n", "X", '"_X', opts)
--- keymap("n", 's', '"_s', opts)
--- keymap("n", 'S', '"_S', opts)
-vim.keymap.set("n", "c", '"_c', opts)
-vim.keymap.set("n", "C", '"_C', opts)
+vim.keymap.set("v", "y", '"+ygv<esc>', { desc = "Yank" })
 
 -- move line up and down
 vim.keymap.set("n", "<M-k>", function()
