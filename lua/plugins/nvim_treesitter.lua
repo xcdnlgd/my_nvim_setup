@@ -40,7 +40,7 @@ return {
       },
       ensure_installed = {
         "bash", "c", "lua", "markdown", "markdown_inline", "python", "query", "vim", "vimdoc", "rust", "toml", "cpp",
-        "html", "css", "json", "jsonc", "yaml", "go"
+        "html", "css", "json", "jsonc", "yaml", "go", "javascript", "typescript"
       },
       textobjects = {
         select = {

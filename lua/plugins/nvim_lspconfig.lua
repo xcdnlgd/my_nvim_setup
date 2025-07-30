@@ -7,7 +7,7 @@ return {
       dependencies = { "williamboman/mason.nvim" },
       opts = function(_, opts)
         opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "ruff", "html", "cssls",
-          "emmet_ls", "jsonls", "yamlls", "gopls" }
+          "emmet_ls", "jsonls", "yamlls", "gopls", "eslint", "vtsls" }
         opts.automatic_enable = {
           exclude = {
             "rust_analyzer",

@@ -13,6 +13,8 @@ return {
       css = { "prettierd" },
       yaml = { "prettierd" },
       go = { "goimports", lsp_format = "last" },
+      javascript = { "prettierd" },
+      typescript = { "prettierd" },
     },
     default_format_opts = {
       lsp_format = "fallback",
