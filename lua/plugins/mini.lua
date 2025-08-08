@@ -43,9 +43,9 @@ return {
         [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
         ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
 
-        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[%s"([{,]' .. followed_by, register = { cr = false } },
-        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[%s\'([{,]' .. followed_by, register = { cr = false } },
-        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[%s`([{,]' .. followed_by, register = { cr = false } },
+        ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[%s\'`([{,]' .. followed_by, register = { cr = false } },
+        ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[%s\"`([{,]' .. followed_by, register = { cr = false } },
+        ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[%s\'\"([{,]' .. followed_by, register = { cr = false } },
       },
     }
   }
