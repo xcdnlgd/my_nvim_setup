@@ -14,6 +14,18 @@ return {
       { "n", "|", function() require("multiple-cursors").align() end },
     },
   },
+  cmd = {
+    "MultipleCursorsAddDown",
+    "MultipleCursorsAddUp",
+    "MultipleCursorsMouseAddDelete",
+    "MultipleCursorsAddVisualArea",
+    "MultipleCursorsAddMatches",
+    "MultipleCursorsAddMatchesV",
+    "MultipleCursorsAddJumpNextMatch",
+    "MultipleCursorsJumpNextMatch",
+    "MultipleCursorsAddJumpPrevMatch",
+    "MultipleCursorsJumpPrevMatch",
+  },
   keys = {
     {
       "<C-n>",
