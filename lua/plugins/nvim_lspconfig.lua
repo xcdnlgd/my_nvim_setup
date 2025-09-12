@@ -6,6 +6,7 @@ return {
       "williamboman/mason-lspconfig.nvim",
       dependencies = { "williamboman/mason.nvim" },
       opts = function(_, opts)
+        vim.lsp.enable("gdscript")
         opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "ruff", "html", "cssls",
           "emmet_ls", "jsonls", "yamlls", "gopls", "eslint", "vtsls" }
         opts.automatic_enable = {
@@ -99,6 +100,12 @@ return {
             local opts = { buffer = buf, desc = mapping.desc }
             vim.keymap.set(mapping[1], mapping[2], mapping[3], opts)
           end
+        end
+
+        -- folding https://github.com/patricorgi/dotfiles/blob/main/.config/nvim/lua/custom/config/folding.lua
+        if client and client:supports_method 'textDocument/foldingRange' then
+          local win = vim.api.nvim_get_current_win()
+          vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
         end
       end,
     })

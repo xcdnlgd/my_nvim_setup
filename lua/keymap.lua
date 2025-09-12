@@ -6,6 +6,8 @@ vim.g.maplocalleader = "\\"
 
 local opts = { silent = true }
 
+vim.keymap.set('n', '<CR>', 'za', { desc = 'Toggle fold under cursor' })
+
 local function diagnostic_jump(forward, severity)
   local jump_opts = {}
   if type(severity) == "string" then jump_opts.severity = vim.diagnostic.severity[severity] end
