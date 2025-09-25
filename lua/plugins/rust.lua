@@ -8,34 +8,32 @@ vim.g.rustaceanvim = {
       vim.cmd("redrawstatus")
     end
   },
-  -- LSP configuration
-  server = {
-    on_attach = function(client, bufnr)
-      -- you can also put keymaps in here
-    end,
-    default_settings = {
-      -- rust-analyzer language server configuration
-      ['rust-analyzer'] = {
-        files = {
-          excludeDirs = {
-            ".direnv",
-            ".git",
-            "target",
-          },
-        },
-        check = {
-          command = "clippy",
-          extraArgs = {
-            "--no-deps",
-          },
-        },
-      },
-    },
-  },
   -- DAP configuration
   dap = {
   },
 }
+
+vim.lsp.config("rust-analyzer", {
+  settings = {
+    ['rust-analyzer'] = {
+      files = {
+        excludeDirs = {
+          ".direnv",
+          ".git",
+          "target",
+        },
+      },
+      check = {
+        command = "clippy",
+        extraArgs = {
+          "--no-deps",
+        },
+        ignore = { "clippy::too_many_arguments" }
+      },
+    }
+  }
+})
+
 return {
   {
     'saecki/crates.nvim',
