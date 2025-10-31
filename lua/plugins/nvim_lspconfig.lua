@@ -8,7 +8,7 @@ return {
       opts = function(_, opts)
         vim.lsp.enable("gdscript")
         opts.ensure_installed = { "lua_ls", "rust_analyzer", "taplo", "clangd", "basedpyright", "ruff", "html", "cssls",
-          "emmet_ls", "jsonls", "yamlls", "gopls", "denols" }
+          "emmet_ls", "jsonls", "yamlls", "gopls", "ts_ls" }
         opts.automatic_enable = {
           exclude = {
             "rust_analyzer",
