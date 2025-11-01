@@ -14,5 +14,6 @@ return {
     opts.icons.group = ""
     opts.icons.rules = false
     opts.icons.separator = "-"
+    opts.delay = 400
   end
 }
