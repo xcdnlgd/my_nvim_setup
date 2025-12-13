@@ -1,3 +1,7 @@
+if true then
+  return
+end
+
 vim.api.nvim_set_hl(0, 'CompilationGreen', { link = "Green" })
 vim.api.nvim_set_hl(0, 'CompilationRed', { link = "Red" })
 vim.api.nvim_set_hl(0, 'CompilationYellow', { link = "Yellow" })
