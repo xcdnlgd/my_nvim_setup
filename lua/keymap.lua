@@ -89,7 +89,7 @@ vim.keymap.set("v", "x", '"+x', { desc = "Cut" })
 -- TODO: see if I really want this
 vim.keymap.set("v", "y", '"+ygv<esc>', { desc = "Yank" })
 
--- move line up and down
+-- move line up and down, can move past fisrt line and last line
 vim.keymap.set("n", "<M-k>", function()
   if vim.fn.line(".") == 1 then
     -- line already the first line
