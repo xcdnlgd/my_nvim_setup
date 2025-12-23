@@ -1,7 +1,8 @@
 local followed_by = '[%s)%]}\'\"`;,.]'
+local bracket_followed_by = '[%s)%]};,.]'
 _G.cursorword_blocklist = function()
   local filetype = vim.bo.filetype
-  local blocklist = {"neo-tree"}
+  local blocklist = { "neo-tree" }
   vim.b.minicursorword_disable = vim.tbl_contains(blocklist, filetype)
 end
 -- Make sure to add this autocommand *before* calling module's `setup()`.
@@ -35,13 +36,13 @@ return {
     version = false,
     opts = {
       mappings = {
-        ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\]' .. followed_by },
-        ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\]' .. followed_by },
-        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\]' .. followed_by },
+        ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\]' .. bracket_followed_by },
+        ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\]' .. bracket_followed_by },
+        ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\]' .. bracket_followed_by },
 
-        [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
-        [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
-        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
+        [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\]' .. bracket_followed_by },
+        [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\]' .. bracket_followed_by },
+        ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\]' .. bracket_followed_by },
 
         ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[%s\'`([{,]' .. followed_by, register = { cr = false } },
         ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[%s\"`([{,]' .. followed_by, register = { cr = false } },
