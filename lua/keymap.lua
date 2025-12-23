@@ -6,8 +6,8 @@ vim.g.maplocalleader = "\\"
 
 local opts = { silent = true }
 
-vim.keymap.set('n', '<CR>', 'za', { desc = 'Toggle fold under cursor' })
-vim.keymap.set({'n', 'x'}, 'gh', '^', { desc = 'Start of Line' })
+vim.keymap.set({'n', 'x'}, 'gh', '0', { desc = 'Start of Line' })
+vim.keymap.set({'n', 'x'}, 'gs', '^', { desc = 'Start of Line (non ws)' })
 vim.keymap.set({'n', 'x'}, 'gl', '$', { desc = 'End of Line' })
 
 local function diagnostic_jump(forward, severity)
