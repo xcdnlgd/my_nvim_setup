@@ -6,9 +6,9 @@ vim.g.maplocalleader = "\\"
 
 local opts = { silent = true }
 
-vim.keymap.set({'n', 'x'}, 'gh', '0', { desc = 'Start of Line' })
-vim.keymap.set({'n', 'x'}, 'gs', '^', { desc = 'Start of Line (non ws)' })
-vim.keymap.set({'n', 'x'}, 'gl', '$', { desc = 'End of Line' })
+vim.keymap.set({ 'n', 'x' }, 'gh', '0', { desc = 'Start of Line' })
+vim.keymap.set({ 'n', 'x' }, 'gs', '^', { desc = 'Start of Line (non ws)' })
+vim.keymap.set({ 'n', 'x' }, 'gl', '$', { desc = 'End of Line' })
 
 local function diagnostic_jump(forward, severity)
   local jump_opts = {}
@@ -183,3 +183,7 @@ vim.keymap.set('i', '<C-BS>', '<C-w>', { silent = true }) -- only work in gui ap
 vim.keymap.set('i', '<C-h>', '<C-w>', { silent = true })  -- to map <C-BS> <C-w> in windows terminal
 
 vim.cmd("cnoremap <C-h> <C-w>")
+
+-- emacs
+vim.keymap.set('i', '<C-a>', '<HOME>', { desc = 'Start of line' })
+vim.keymap.set('i', '<C-e>', '<END>', { desc = 'End of line' })

@@ -24,7 +24,7 @@ return {
   keys = {
     { "<leader>cc", ":Compile<cr>",      desc = "Compile" },
     { "<leader>cr", ":Recompile<cr>",    desc = "Recompile" },
-    { "<leader>cg", ":FirstError<cr>",   desc = "FirstError" },
+    { "<leader>cf", ":FirstError<cr>",   desc = "FirstError" },
     { "<leader>cC", ":CurrentError<cr>", desc = "CurrentError" },
     { "<leader>cn", ":NextError<cr>",    desc = "NextError" },
     { "<leader>cp", ":PrevError<cr>",    desc = "PrevError" },
@@ -43,6 +43,15 @@ return {
       -- the command (and behave more like `:!`), add:
       bang_expansion = true,
       hidden_buffer = true,
+      error_regexp_table = {
+        file_row_col = {
+          regex = [[\([^ \n\t\r:]\+\):\(\d\+\):\(\d\+\):]],
+          filename = 1,
+          row = 2,
+          col = 3,
+          priority = 1000,
+        },
+      },
     }
     vim.api.nvim_set_hl(0, "CompileModeInfo", { link = "Green" })
     vim.api.nvim_set_hl(0, "CompileModeError", { link = "Red" })
