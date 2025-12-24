@@ -9,13 +9,17 @@ local open_buf = require('utils').open_buf
 return {
   "rebelot/heirline.nvim",
   event = "BufEnter",
-  dependencies = { { "lewis6991/gitsigns.nvim" } },
+  dependencies = {
+    "lewis6991/gitsigns.nvim",
+    "zeioth/heirline-components.nvim",
+  },
   opts = function(_, opts)
     vim.api.nvim_set_hl(0, "TabLineSel", { link = "NormalFloat" })
     vim.api.nvim_set_hl(0, "TabLine", { link = "Ignore" })
 
     local conditions = require("heirline.conditions")
     local utils = require("heirline.utils")
+    local components = require("heirline-components.all").component
 
     local colors = {
       bright_bg = utils.get_highlight("Folded").bg,
@@ -686,12 +690,18 @@ return {
 
     ---------------------- statusline ended --------------------------
 
+    local StatusColumn = {
+      init = function(self) self.bufnr = vim.api.nvim_get_current_buf() end,
+      components.foldcolumn(),
+      components.numbercolumn(),
+      components.signcolumn(),
+    } or nil
+
     return vim.tbl_deep_extend("force", opts, {
       statusline = StatusLines,
-      -- winbar = {},
-      -- tabline = {},
-      -- statuscolumn = {},
+      statuscolumn = StatusColumn,
       tabline = TabLine,
+      -- winbar = {},
     })
   end
 }

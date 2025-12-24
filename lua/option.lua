@@ -43,7 +43,7 @@ vim.opt.wrap = false -- disable wrapping of lines longer than the width of windo
 vim.opt.writebackup = false -- disable making a backup before overwriting a file
 
 -- folding https://github.com/patricorgi/dotfiles/blob/main/.config/nvim/lua/custom/config/folding.lua
-vim.o.foldcolumn = '0' -- '0' is not bad
+vim.o.foldcolumn = '1' -- '0' is not bad
 vim.o.foldlevelstart = 99 -- unfold all
 vim.o.foldenable = true
 vim.o.foldmethod = 'expr'
