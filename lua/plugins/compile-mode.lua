@@ -55,7 +55,9 @@ return {
     }
     vim.api.nvim_set_hl(0, "CompileModeInfo", { link = "Green" })
     vim.api.nvim_set_hl(0, "CompileModeError", { link = "Red" })
+    vim.api.nvim_set_hl(0, "CompileModeWarning", { link = "Yellow" })
     vim.api.nvim_set_hl(0, "CompileModeMessageCol", { link = "Aqua" })
     vim.api.nvim_set_hl(0, "CompileModeMessageRow", { link = "Purple" })
+    vim.api.nvim_set_hl(0, "CompileModeMessage", { })
   end
 }
