@@ -50,6 +50,7 @@ local open_float_terminal = function(opts)
   if vim.bo[buf].buftype ~= "terminal" then
     vim.cmd.terminal()
     vim.bo[buf].buflisted = false
+    vim.wo[win].winfixbuf = true
   end
   vim.api.nvim_create_autocmd("VimResized", {
     callback = function()
@@ -81,6 +82,7 @@ local open_bottom_terminal = function(opts)
     vim.api.nvim_win_call(win, function()
       vim.cmd.terminal()
       vim.bo[buf].buflisted = false
+      vim.wo[win].winfixbuf = true
       vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
         { desc = "Move to above split", buffer = buf })
       vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
