@@ -4,6 +4,8 @@ vim.api.nvim_create_autocmd('DiagnosticChanged', {
   end,
 })
 
+local open_buf = require('utils').open_buf
+
 return {
   "rebelot/heirline.nvim",
   event = "BufEnter",
@@ -134,7 +136,7 @@ return {
       local char = vim.fn.getcharstr()
       local bufnr = buflist._picker_labels[char]
       if bufnr then
-        vim.api.nvim_win_set_buf(0, bufnr)
+        open_buf(bufnr)
       end
       buflist._show_picker = false
       vim.cmd.redrawtabline()
@@ -206,7 +208,7 @@ return {
               vim.api.nvim_buf_delete(minwid, { force = false })
             end)
           else
-            vim.api.nvim_win_set_buf(0, minwid)
+            open_buf(minwid)
           end
         end,
         minwid = function(self)
