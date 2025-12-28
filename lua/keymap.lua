@@ -79,7 +79,7 @@ vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })
 
 vim.keymap.set("n", "y", '"+y', { desc = "Yank" })
-vim.keymap.set("n", "Y", '"+Y', { desc = "Yank" })
+vim.keymap.set("n", "Y", '"+y$', { desc = "Yank" })
 vim.keymap.set("n", "p", '"+p', { desc = "Paste" })
 vim.keymap.set("n", "P", '"+P', { desc = "Paste" })
 vim.keymap.set("v", "p", '"+p', { desc = "Paste" })
