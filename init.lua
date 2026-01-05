@@ -1,6 +1,7 @@
 require("option")
 require("keymap")
 require("autocmds")
+require("custcmds")
 require("lazy_setup")
 
 -- create .nvimrc.lua in your project root folder
