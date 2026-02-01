@@ -29,7 +29,16 @@ return {
   {
     'echasnovski/mini.cursorword',
     version = false,
-    opts = {}
+    opts = function(_, _)
+      vim.api.nvim_create_user_command("TrimSpace",
+        function(_)
+          vim.cmd("lua MiniTrailspace.trim()")
+        end,
+        {
+          range = false,
+        }
+      )
+    end
   },
   {
     "echasnovski/mini.pairs",
