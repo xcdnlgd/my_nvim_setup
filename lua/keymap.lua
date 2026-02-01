@@ -78,16 +78,17 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })
 
-vim.keymap.set("n", "y", '"+y', { desc = "Yank" })
-vim.keymap.set("n", "Y", '"+y$', { desc = "Yank" })
-vim.keymap.set("n", "p", '"+zp', { desc = "Paste" })
-vim.keymap.set("n", "P", '"+zP', { desc = "Paste" })
-vim.keymap.set("v", "p", '"+zp', { desc = "Paste" })
-vim.keymap.set("v", "x", '"+x', { desc = "Cut" })
+vim.keymap.set("n", "Y", 'y$', { desc = "Yank" })
+vim.keymap.set("n", "c", '"_c', { desc = "Change" })
+vim.keymap.set("n", "C", '"_C', { desc = "Change" })
+vim.keymap.set("n", "d", '"_d', { desc = "Delete" })
+vim.keymap.set("n", "D", '"_D', { desc = "Delete" })
+vim.keymap.set("v", "p", 'P', { desc = "Put" })
+vim.keymap.set("v", "P", 'p', { desc = "Put" })
 
 -- preserve cursor position
 -- TODO: see if I really want this
-vim.keymap.set("v", "y", '"+ygv<esc>', { desc = "Yank" })
+vim.keymap.set("v", "y", 'ygv<esc>', { desc = "Yank" })
 
 -- move line up and down, can move past fisrt line and last line
 vim.keymap.set("n", "<M-k>", function()
