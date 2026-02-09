@@ -9,7 +9,7 @@ return {
   build = 'cargo build --release',
   -- If you use nix, you can build from source using latest nightly rust with:
   -- build = 'nix run .#build-plugin',
-
+  enabled = false,
   --- @module 'blink.pairs'
   --- @type blink.pairs.Config
   opts = {
@@ -18,7 +18,7 @@ return {
       -- and require("blink.pairs.mappings").disable()
       -- to enable/disable mappings at runtime
       enabled = true,
-      cmdline = true,
+      cmdline = false,
       -- or disable with `vim.g.pairs = false` (global) and `vim.b.pairs = false` (per-buffer)
       -- and/or with `vim.g.blink_pairs = false` and `vim.b.blink_pairs = false`
       disabled_filetypes = {},
@@ -39,7 +39,7 @@ return {
 
       -- highlights matching pairs under the cursor
       matchparen = {
-        enabled = true,
+        enabled = false,
         -- known issue where typing won't update matchparen highlight, disabled by default
         cmdline = false,
         -- also include pairs not on top of the cursor, but surrounding the cursor
