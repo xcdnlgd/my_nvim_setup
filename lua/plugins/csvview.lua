@@ -2,6 +2,10 @@ return {
   "hat0uma/csvview.nvim",
   opts = {
     parser = { comments = { "#", "//" } },
+    view = {
+      min_column_width = 0,
+      spacing = 0,
+    },
     keymaps = {
       -- Text objects for selecting fields
       textobject_field_inner = { "if", mode = { "o", "x" } },
