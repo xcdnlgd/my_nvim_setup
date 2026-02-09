@@ -1,130 +1,53 @@
-local not_following_char_except_for = function(except)
-  return function()
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    local line = vim.api.nvim_get_current_line()
-    local col = cursor[2]
-    local char = line:sub(col, col)
-    return vim.tbl_contains(except, char)
-  end
-end
-
-local not_followed_by_char_except_for = function(except)
-  return function()
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    local line = vim.api.nvim_get_current_line()
-    local col = cursor[2]
-    local char = line:sub(col + 1, col + 1)
-    return vim.tbl_contains(except, char)
-  end
-end
-
 return {
-  'Saghen/blink.pairs',
-  -- buggy
-  enabled = false,
+  'saghen/blink.pairs',
   -- version = '*', -- (recommended) only required with prebuilt binaries
 
   -- download prebuilt binaries from github releases
   -- dependencies = 'saghen/blink.download',
-  -- OR build from source
+  -- OR build from source, requires nightly:
+  -- https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
   build = 'cargo build --release',
-  opts = function()
-    local except_for = { '', ' ', '\t', ")", "]", "}", [[']], [["]], "`", ";", ",", "." }
-    return {
-      highlights = {
-        enabled = true,
-        groups = {
-          'Orange',
-          'Purple',
-          'Blue',
-        },
+  -- If you use nix, you can build from source using latest nightly rust with:
+  -- build = 'nix run .#build-plugin',
+
+  --- @module 'blink.pairs'
+  --- @type blink.pairs.Config
+  opts = {
+    mappings = {
+      -- you can call require("blink.pairs.mappings").enable()
+      -- and require("blink.pairs.mappings").disable()
+      -- to enable/disable mappings at runtime
+      enabled = true,
+      cmdline = true,
+      -- or disable with `vim.g.pairs = false` (global) and `vim.b.pairs = false` (per-buffer)
+      -- and/or with `vim.g.blink_pairs = false` and `vim.b.blink_pairs = false`
+      disabled_filetypes = {},
+      -- see the defaults:
+      -- https://github.com/Saghen/blink.pairs/blob/main/lua/blink/pairs/config/mappings.lua#L14
+      pairs = {},
+    },
+    highlights = {
+      enabled = true,
+      -- requires require('vim._extui').enable({}), otherwise has no effect
+      cmdline = false,
+      groups = {
+        'Orange',
+        'Purple',
+        'Blue',
       },
-      mappings = {
+      unmatched_group = 'BlinkPairsUnmatched',
+
+      -- highlights matching pairs under the cursor
+      matchparen = {
         enabled = true,
-        pairs = {
-          ['('] = {
-            ')',
-            when = not_followed_by_char_except_for(except_for)
-          },
-          ['['] = {
-            ']',
-            when = not_followed_by_char_except_for(except_for)
-          },
-          ['{'] = {
-            '}',
-            when = not_followed_by_char_except_for(except_for)
-          },
-          ["'"] = {
-            {
-              "'''",
-              "'''",
-              when = function()
-                local cursor = vim.api.nvim_win_get_cursor(0)
-                local line = vim.api.nvim_get_current_line()
-                return line:sub(cursor[2] - 1, cursor[2]) == "''" and not_followed_by_char_except_for(except_for)()
-              end,
-              filetypes = { 'python' },
-            },
-            {
-              "'",
-              enter = false,
-              when = function()
-                local cursor = vim.api.nvim_win_get_cursor(0)
-                local char = vim.api.nvim_get_current_line():sub(cursor[2], cursor[2])
-                return not char:match('%w') and not_followed_by_char_except_for(except_for)() and
-                    not_following_char_except_for({ "", " ", "\t", [[']], "(", "[", "{", "," })()
-              end,
-            },
-          },
-          ['"'] = {
-            {
-              'r#"',
-              '"#',
-              filetypes = { 'rust' },
-              priority = 100,
-              when = not_followed_by_char_except_for(except_for)
-            },
-            {
-              '"""',
-              '"""',
-              when = function()
-                local cursor = vim.api.nvim_win_get_cursor(0)
-                local line = vim.api.nvim_get_current_line()
-                return line:sub(cursor[2] - 1, cursor[2]) == '""' and not_followed_by_char_except_for(except_for)()
-              end,
-              filetypes = { 'python', 'elixir', 'julia', 'kotlin', 'scala', 'sbt' },
-            },
-            {
-              '"',
-              enter = false,
-              when = function()
-                return not_followed_by_char_except_for(except_for)() and
-                    not_following_char_except_for({ "", " ", "\t", [["]], "(", "[", "{", "," })()
-              end
-            },
-          },
-          ['`'] = {
-            {
-              '```',
-              '```',
-              when = function()
-                local cursor = vim.api.nvim_win_get_cursor(0)
-                local line = vim.api.nvim_get_current_line()
-                return line:sub(cursor[2] - 1, cursor[2]) == '``' and not_followed_by_char_except_for(except_for)()
-              end,
-              filetypes = { 'markdown', 'vimwiki', 'rmarkdown', 'rmd', 'pandoc', 'quarto', 'typst' },
-            },
-            {
-              '`',
-              enter = false,
-              when = function()
-                return not_followed_by_char_except_for(except_for)() and
-                    not_following_char_except_for({ "", " ", "\t", [[`]], "(", "[", "{", "," })()
-              end
-            },
-          },
-        }
-      }
-    }
-  end,
+        -- known issue where typing won't update matchparen highlight, disabled by default
+        cmdline = false,
+        -- also include pairs not on top of the cursor, but surrounding the cursor
+        include_surrounding = false,
+        group = 'BlinkPairsMatchParen',
+        priority = 250,
+      },
+    },
+    debug = false,
+  }
 }

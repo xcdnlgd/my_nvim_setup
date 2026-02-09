@@ -1,7 +1,7 @@
 {
   "baleia.nvim": { "branch": "main", "commit": "fb3aff021b2b64ef820d0230d2c22ebfaf71bb6a" },
   "blink.cmp": { "branch": "main", "commit": "3033d278848129899f94843e12ebb83a31342faa" },
-  "blink.pairs": { "branch": "main", "commit": "70386e180041085e3d76f399dfe36eca909a9cc0" },
+  "blink.pairs": { "branch": "main", "commit": "2a7cb15f2c4bbbbe178ebf9f3fdae19aa6d28d39" },
   "compile-mode.nvim": { "branch": "main", "commit": "e94543312729df6cc6efc8a136e9a58d52099df2" },
   "conform.nvim": { "branch": "master", "commit": "ffe26e8df8115c9665d24231f8a49fadb2d611ce" },
   "crates.nvim": { "branch": "main", "commit": "afcd1cc3eeceb5783676fc8464389b9216a29d05" },

@@ -42,6 +42,7 @@ return {
   },
   {
     "echasnovski/mini.pairs",
+    enabled = false,
     version = false,
     opts = {
       mappings = {
