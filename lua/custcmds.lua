@@ -1,11 +1,21 @@
 local align_lines = function(lines, target)
+  -- match target
   local max_col = 0
   local positions = {}
   for i, line in ipairs(lines) do
-    local start_idx, _ = string.find(line, target, 1, true)
-    positions[i] = start_idx
-    if start_idx and start_idx > max_col then
-      max_col = start_idx
+    local res = vim.fn.matchstrpos(line, target)
+    local start_idx_raw = res[2]
+    local end_idx_raw = res[3]
+    if start_idx_raw ~= -1 then
+      local start_idx = start_idx_raw + 1
+      local end_idx = end_idx_raw
+      positions[i] = { start_idx, end_idx }
+
+      if start_idx > max_col then
+        max_col = start_idx
+      end
+    else
+      positions[i] = { nil, nil }
     end
   end
 
@@ -13,9 +23,10 @@ local align_lines = function(lines, target)
     return lines, positions, max_col
   end
 
+  -- add padding
   local new_lines = {}
   for i, line in ipairs(lines) do
-    local col = positions[i]
+    local col = positions[i][1]
     if col and col ~= max_col then
       local left_part = string.sub(line, 1, col - 1)
       local right_part = string.sub(line, col)
@@ -61,12 +72,14 @@ vim.api.nvim_create_user_command("Align",
         vim.api.nvim_buf_set_lines(buffer, line1 - 1, line2, true, new_lines)
       end
 
+      -- add highlights
       local target_buf = preview_buf or 0
       for i, _ in ipairs(lines) do
-        local col = positions[i]
+        local col = positions[i][1]
         if col then
           local new_start = max_col - 1
-          local new_end = max_col - 1 + #target
+          local len = positions[i][2] - positions[i][1] + 1
+          local new_end = max_col - 1 + len
           vim.hl.range(
             target_buf,
             preview_ns,
