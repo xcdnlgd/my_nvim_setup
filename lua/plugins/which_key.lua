@@ -1,6 +1,7 @@
 return {
   "folke/which-key.nvim",
   opts = function(_, opts)
+    require("which-key.plugins.presets").operators["v"] = nil -- for multiple-cursors
     local wk = require("which-key")
     wk.add({
       { "<leader>b", group = "Buffer" },
