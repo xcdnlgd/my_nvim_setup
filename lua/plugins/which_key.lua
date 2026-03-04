@@ -17,5 +17,8 @@ return {
     opts.icons.rules = false
     opts.icons.separator = "-"
     opts.delay = 400
+    opts.triggers = {
+      { "<auto>", mode = "nso" }
+    }
   end
 }

@@ -1,5 +1,5 @@
 return {
-  "ggandor/leap.nvim",
+  "https://codeberg.org/andyg/leap.nvim",
   config = function()
     vim.api.nvim_set_hl(0, "LeapLabel", { link = "Search" })
   end,
