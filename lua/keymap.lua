@@ -167,7 +167,7 @@ vim.keymap.set("v", "<M-j>", function()
 end, opts)
 
 -- duplicate line up and down
-vim.keymap.set("n", "<M-K>", "<cmd>t.<cr>k", opts)
+vim.keymap.set("n", "<M-K>", "<cmd>t-1<cr>", opts)
 vim.keymap.set("n", "<M-J>", "<cmd>t.<cr>", opts)
 vim.keymap.set("i", "<M-K>", "<esc>:t .<cr>gi", opts)
 vim.keymap.set("i", "<M-J>", "<esc>:t -1<cr>gi", opts)
