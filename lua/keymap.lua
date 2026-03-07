@@ -78,11 +78,14 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below split" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right split" })
 
+-- clipboard
 vim.keymap.set("n", "Y", 'y$', { desc = "Yank" })
 vim.keymap.set({ "n", "x" }, "c", '"_c', { desc = "Change" })
 vim.keymap.set({ "n", "x" }, "C", '"_C', { desc = "Change" })
 vim.keymap.set({ "n", "x" }, "d", '"_d', { desc = "Delete" })
 vim.keymap.set({ "n", "x" }, "D", '"_D', { desc = "Delete" })
+vim.keymap.set("n", "x", '"_x', { desc = "Delete forward" })
+vim.keymap.set("n", "X", '"_X', { desc = "Delete backward" })
 vim.keymap.set("v", "p", 'P', { desc = "Put" })
 vim.keymap.set("v", "P", 'p', { desc = "Put" })
 
