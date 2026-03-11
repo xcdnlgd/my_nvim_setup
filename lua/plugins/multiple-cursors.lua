@@ -19,10 +19,12 @@ return {
   opts = {
     pre_hook = function()
       vim.g.minipairs_disable = true
+      vim.g.minicursorword_disable = true -- highlight conflict
       -- require("blink.pairs.mappings").disable()
     end,
     post_hook = function()
       vim.g.minipairs_disable = false
+      vim.g.minicursorword_disable = false
       -- require("blink.pairs.mappings").enable()
     end,
   },
