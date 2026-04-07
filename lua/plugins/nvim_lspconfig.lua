@@ -1,7 +1,21 @@
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
-    { "folke/neoconf.nvim", lazy = true, opts = {} },
+    {
+      "folke/neoconf.nvim",
+      dependencies = {
+        "folke/lazydev.nvim",
+        ft = "lua", -- only load on lua files
+        opts = {
+          library = {
+            -- See the configuration section for more details
+            -- Load luvit types when the `vim.uv` word is found
+            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+          },
+        },
+      },
+      opts = {}
+    },
     {
       "williamboman/mason-lspconfig.nvim",
       dependencies = { "williamboman/mason.nvim" },
@@ -47,7 +61,6 @@ return {
             },
           }
         })
-
       end,
     },
   },
@@ -75,7 +88,7 @@ return {
           vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
             desc = "Refresh codelens (buffer)",
             callback = function(args)
-              vim.lsp.codelens.refresh({ bufnr = args.buf })
+              vim.lsp.codelens.enable(true, { bufnr = args.buf })
             end,
           })
         end
