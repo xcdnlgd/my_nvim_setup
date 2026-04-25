@@ -3,6 +3,7 @@ return {
   main = "nvim-treesitter.configs",
   dependencies = { { "nvim-treesitter/nvim-treesitter-textobjects", lazy = true } },
   event = "VeryLazy",
+  enabled = false,
   cmd = {
     "TSBufDisable",
     "TSBufEnable",
