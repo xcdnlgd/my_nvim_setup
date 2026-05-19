@@ -50,14 +50,14 @@ return {
     notifier = {},
   },
   keys = {
-    { "<leader>ff", function() require("snacks").picker.files() end,                 desc = "Find Files" },
-    {
-      "<Leader>fF",
-      function() require("snacks").picker.files { hidden = true, ignored = true } end,
-      desc = "Find all files",
-    },
+    -- { "<leader>ff", function() require("snacks").picker.files() end,                 desc = "Find Files" },
+    -- {
+    --   "<Leader>fF",
+    --   function() require("snacks").picker.files { hidden = true, ignored = true } end,
+    --   desc = "Find all files",
+    -- },
     { "<leader>fb", function() require("snacks").picker.buffers() end,               desc = "Buffers" },
-    { "<leader>f/", function() require("snacks").picker.grep() end,                  desc = "Grep" },
+    -- { "<leader>f/", function() require("snacks").picker.grep() end,                  desc = "Grep" },
     { "<leader>ft", function() require("snacks").picker.todo_comments() end,         desc = "Todo" }, -- FIXME: weird prompt
     { "<leader>n",  function() require("snacks").picker.notifications() end,         desc = "Notification History" },
     -- git
