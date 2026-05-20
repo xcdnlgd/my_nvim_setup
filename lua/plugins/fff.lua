@@ -14,6 +14,10 @@ return {
     prompt_vim_mode = true,
     layout = {
       prompt_position = 'top',
+    },
+    keymaps = {
+      move_up = { '<Up>', '<C-p>', '<C-k>' },
+      move_down = { '<Down>', '<C-n>', '<C-j>' },
     }
   },
   lazy = false, -- the plugin lazy-initialises itself
