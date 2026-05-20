@@ -94,3 +94,16 @@ vim.api.nvim_create_user_command("Align",
     end
   }
 )
+
+vim.api.nvim_create_user_command('Path',
+  function()
+    local path = vim.fn.expand("%p")
+    vim.api.nvim_echo({ { path, "Normal" } }, false, {})
+  end, { desc = 'Print file path' }
+)
+vim.api.nvim_create_user_command('PathFull',
+  function()
+    local path = vim.fn.expand("%:p")
+    vim.api.nvim_echo({ { path, "Normal" } }, false, {})
+  end, { desc = 'Print full file path' }
+)
