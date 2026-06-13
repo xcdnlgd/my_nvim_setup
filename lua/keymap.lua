@@ -193,5 +193,5 @@ vim.keymap.set('i', '<C-a>', '<HOME>', { desc = 'Start of line' })
 vim.keymap.set('i', '<C-e>', '<END>', { desc = 'End of line' })
 
 -- st + tmux {extended-keys on}
-local all_mode = {"n", "i", "c", "t", "v", "x", "s", "o"}
-vim.keymap.set(all_mode, '<M-[>Z', '<S-Tab>', { })
+local all_mode = { "n", "i", "c", "t", "v", "x", "s", "o" }
+vim.keymap.set(all_mode, '<M-[>Z', '<S-Tab>', { remap = true })
