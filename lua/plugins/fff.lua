@@ -7,6 +7,10 @@ return {
   -- for nixos:
   -- build = "nix run .#release",
   opts = {
+    hl = {
+      border = "Normal",
+      normal = "Normal",
+    },
     debug = {
       enabled = true,
       show_scores = true,
