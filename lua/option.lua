@@ -42,6 +42,7 @@ vim.opt.virtualedit = "block" -- allow going past end of line in visual block mo
 vim.opt.wrap = false -- disable wrapping of lines longer than the width of window
 vim.opt.writebackup = false -- disable making a backup before overwriting a file
 vim.opt.clipboard = "unnamedplus"
+vim.opt.fixendofline = false
 
 -- folding https://github.com/patricorgi/dotfiles/blob/main/.config/nvim/lua/custom/config/folding.lua
 vim.o.foldcolumn = '1' -- '0' is not bad
