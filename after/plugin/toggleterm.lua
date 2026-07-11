@@ -83,6 +83,7 @@ local open_bottom_terminal = function(opts)
       vim.cmd.terminal()
       vim.bo[buf].buflisted = false
       vim.wo[win].winfixbuf = true
+      vim.wo[win].winbar = ""
       vim.keymap.set("t", "<C-k>", function() require("smart-splits").move_cursor_up() end,
         { desc = "Move to above split", buffer = buf })
       vim.keymap.set("t", "<C-j>", function() require("smart-splits").move_cursor_down() end,
