@@ -59,5 +59,35 @@ return {
         ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[%s\'\"([{,]' .. followed_by, register = { cr = false } },
       },
     }
-  }
+  },
+  {
+    'nvim-mini/mini.files',
+    version = false,
+    opts = function(_, _)
+      local MiniFiles = require("mini.files")
+      vim.keymap.set("n", "<leader>e", function()
+        if MiniFiles.get_explorer_state() == nil then
+          MiniFiles.open()
+        else
+          MiniFiles.close()
+        end
+      end, { desc = "Toggle Explorer" })
+      vim.api.nvim_set_hl(0, "MiniFilesNormal", { link = "Normal" })
+      vim.api.nvim_set_hl(0, "MiniFilesBorder", { link = "Normal" })
+      vim.api.nvim_set_hl(0, "MiniFilesTitle", { link = "Normal" })
+      vim.api.nvim_set_hl(0, "MiniFilesTitleFocused", { link = "Green" })
+      --       vim.api.nvim_set_hl(0, "MiniFilesCursorLine", { bg = "NONE" })
+      return {
+        mappings = {
+          go_in = "L",
+          go_out = "H",
+          go_in_plus = "",
+          go_out_plus = "",
+        },
+        windows = {
+          preview = true,
+        },
+      }
+    end
+  },
 }
