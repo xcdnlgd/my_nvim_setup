@@ -2,6 +2,7 @@ vim.opt.spell = true
 vim.opt.spelllang = "en_us"
 vim.opt.spelloptions = "camel"
 
+vim.opt.exrc = true
 vim.opt.cinoptions = {"l1","g0","(0","W4","m1", "j1", "J1"} -- see :help cinoptions-values
 vim.opt.cmdheight = 0 -- hide command line unless needed
 vim.opt.completeopt = "menu,menuone,noselect" -- Options for insert mode completion
