@@ -65,9 +65,26 @@ return {
     version = false,
     opts = function(_, _)
       local MiniFiles = require("mini.files")
+      local show_parent = true
+      local function branch_from_root(path, root)
+        local branch = { root }
+        for part in path:sub(#root + 1):gmatch("[^/]+") do
+          branch[#branch + 1] = branch[#branch] .. "/" .. part
+        end
+        return branch
+      end
       vim.keymap.set("n", "<leader>e", function()
         if MiniFiles.get_explorer_state() == nil then
-          MiniFiles.open()
+          local path = vim.api.nvim_buf_get_name(0)
+          local cwd = vim.fs.normalize(vim.fn.getcwd())
+          if path ~= "" and show_parent and vim.fs.normalize(path):find(cwd, 1, true) == 1 then
+            MiniFiles.open(cwd, false)
+            MiniFiles.set_branch(branch_from_root(vim.fs.normalize(path), cwd))
+          elseif path ~= "" then
+            MiniFiles.open(path)
+          else
+            MiniFiles.open(cwd, false)
+          end
         else
           MiniFiles.close()
         end
