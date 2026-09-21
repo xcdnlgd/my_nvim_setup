@@ -34,6 +34,9 @@ end, { desc = 'Toggle diagnostic virtual_text' })
 vim.keymap.set('n', '<leader>ui', function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = 'Toggle lsp inlay_hint' })
+vim.keymap.set('n', '<leader>uc', function()
+  vim.lsp.codelens.enable(not vim.lsp.codelens.is_enabled())
+end, { desc = 'Toggle lsp codelens' })
 
 
 vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, desc = "Move cursor down" })

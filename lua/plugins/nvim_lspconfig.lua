@@ -84,7 +84,8 @@ return {
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         local buf = event.buf
 
-        if client and client:supports_method("textDocument/codeLens", buf) then
+        -- annoying
+        if false and client and client:supports_method("textDocument/codeLens", buf) then
           vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
             desc = "Refresh codelens (buffer)",
             callback = function(args)
