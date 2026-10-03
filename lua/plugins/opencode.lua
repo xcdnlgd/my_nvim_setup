@@ -103,10 +103,80 @@ end
 
 return {
   "nickjvandyke/opencode.nvim",
-  version = "v1.0.2",
+  -- OpenCode v2 support lives on `main` (no stable release yet).
+  branch = "main",
   config = function()
     -- 是否在 nvim 内显示 edit diff；false 则 edit 请求交给 TUI
     local enable_diff = true
+
+    -- 当前 tmux window 里是否有面板在跑 opencode。
+    -- tmux 把 `fish -c opencode` 的 pane_current_command 报成 fish，
+    -- 所以看进程树里有没有 opencode 子进程更可靠。
+    local function pane_runs_opencode(pane_pid)
+      return vim.trim(vim.fn.system("pgrep -P " .. pane_pid .. " -x opencode 2>/dev/null")) ~= ""
+    end
+
+    local function find_opencode_pane()
+      local fmt = "#{pane_id}\t#{pane_current_command}\t#{pane_pid}"
+      local out = vim.fn.system("tmux list-panes -F '" .. fmt .. "' 2>/dev/null")
+      for _, line in ipairs(vim.split(out, "\n", { trimempty = true })) do
+        local id, cmd, pid = line:match("^(%%%d+)\t([^\t]*)\t(%d+)$")
+        if id and (cmd == "opencode" or pane_runs_opencode(pid)) then
+          return id
+        end
+      end
+    end
+
+    -- 确保右侧有 opencode 面板；focus=true 则聚焦它，false 则不抢 nvim 焦点
+    local function ensure_opencode_pane(focus)
+      if vim.env.TMUX == nil then
+        return
+      end
+
+      local existing = find_opencode_pane()
+      if existing then
+        if focus then
+          vim.fn.system("tmux select-pane -t " .. existing)
+        end
+        return existing
+      end
+
+      -- 加 -d 表示不聚焦；不加则新面板自动获得焦点
+      local detach = focus and "" or "-d "
+      local pane = vim.trim(vim.fn.system(
+        "tmux split-window " .. detach .. "-h -l 80 -P -F '#{pane_id}' 'opencode'"
+      ))
+      if pane ~= "" then
+        vim.g.opencode_pane = pane
+        vim.fn.system("tmux set-option -t " .. pane .. " -p allow-passthrough off")
+      end
+      return pane
+    end
+
+    -- 修复：opencode v2 的 SSE 心跳是 15s，而插件超时只有 11s，
+    -- 导致订阅每 11s 就断开，permission.replied 收不到、编辑 diff 不自动关闭。
+    -- 这里把插件的超时常量调大到 30s（只改运行时，不动插件文件）。
+    do
+      local function patch_upvalue(fn, name, value)
+        local i = 1
+        while true do
+          local n, v = debug.getupvalue(fn, i)
+          if not n then
+            break
+          end
+          if n == name then
+            debug.setupvalue(fn, i, value)
+            return true
+          end
+          if type(v) == "function" and patch_upvalue(v, name, value) then
+            return true
+          end
+          i = i + 1
+        end
+        return false
+      end
+      patch_upvalue(require("opencode.server").connect, "OPENCODE_HEARTBEAT_INTERVAL_MS", 30000)
+    end
 
     vim.g.opencode_opts = {
       events = {
@@ -118,14 +188,9 @@ return {
         },
       },
       server = {
+        -- 插件发现不到服务时确保右侧面板存在（不抢 nvim 焦点）
         start = function()
-          local pane = vim.trim(vim.fn.system(
-            "tmux split-window -d -P -F '#{pane_id}' -h -l 80 'opencode --port'"
-          ))
-          if pane ~= "" then
-            vim.g.opencode_pane = pane
-            vim.fn.system("tmux set-option -t " .. pane .. " -p allow-passthrough off")
-          end
+          ensure_opencode_pane(false)
         end,
       },
     }
@@ -136,17 +201,17 @@ return {
     if enable_diff then
       -- opencode 的 diff 会被 trimDiff 去掉公共缩进，导致 :diffpatch 应用失败（空 diff）。
       -- 打开 diff 前同步 buffer 到磁盘，并把 patch 的缩进补回来。
+      -- v2 事件结构：{ id, type = "permission.asked", data = { action = "edit", metadata.files[1] = { file, patch } } }
+      -- hook `preview`：它同时被通用 permission 判断和 edit diff 处理调用。
       local edits = require("opencode.events.permissions.edits")
-      local orig_diff = edits.diff
-      edits.diff = function(event)
-        if event.type == "permission.asked" and event.properties.permission == "edit" then
+      local orig_preview = edits.preview
+      edits.preview = function(event)
+        local edit = orig_preview(event)
+        if edit then
           vim.cmd("silent! checktime")
-          local md = event.properties.metadata
-          if md and md.diff and md.filepath then
-            md.diff = reindent_patch(md.diff, md.filepath)
-          end
+          edit.diff = reindent_patch(edit.diff, edit.filepath)
         end
-        return orig_diff(event)
+        return edit
       end
     end
 
@@ -160,7 +225,10 @@ return {
       end,
     })
 
-    vim.keymap.set({ "n", "x" }, "<leader>a", function() require("opencode").ask("@this: ") end,
-      { desc = "Ask opencode…" })
+    -- <leader>a：确保右侧有 opencode 面板（不聚焦），在 nvim 输入框提问（预填 @this）
+    vim.keymap.set({ "n", "x" }, "<leader>a", function()
+      ensure_opencode_pane(false)
+      require("opencode").ask("@this: ")
+    end, { desc = "Ask opencode…" })
   end
 }
