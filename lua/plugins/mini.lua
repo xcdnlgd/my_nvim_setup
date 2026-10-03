@@ -96,9 +96,9 @@ return {
       --       vim.api.nvim_set_hl(0, "MiniFilesCursorLine", { bg = "NONE" })
       return {
         mappings = {
-          go_in = "L",
+          go_in = "",
           go_out = "H",
-          go_in_plus = "",
+          go_in_plus = "L",
           go_out_plus = "",
         },
         windows = {
