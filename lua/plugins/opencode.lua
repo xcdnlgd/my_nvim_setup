@@ -144,7 +144,7 @@ return {
       -- 加 -d 表示不聚焦；不加则新面板自动获得焦点
       local detach = focus and "" or "-d "
       local pane = vim.trim(vim.fn.system(
-        "tmux split-window " .. detach .. "-h -l 80 -P -F '#{pane_id}' 'opencode'"
+        "tmux split-window " .. detach .. "-h -l 80 -P -F '#{pane_id}' 'opencode --continue'"
       ))
       if pane ~= "" then
         vim.g.opencode_pane = pane
