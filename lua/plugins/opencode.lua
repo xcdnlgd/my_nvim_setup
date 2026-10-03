@@ -175,7 +175,13 @@ return {
         end
         return false
       end
-      patch_upvalue(require("opencode.server").connect, "OPENCODE_HEARTBEAT_INTERVAL_MS", 30000)
+      if not patch_upvalue(require("opencode.server").connect, "OPENCODE_HEARTBEAT_INTERVAL_MS", 30000) then
+        vim.notify(
+          "opencode.nvim: heartbeat patch did not apply (OPENCODE_HEARTBEAT_INTERVAL_MS renamed?), SSE may disconnect after 11s",
+          vim.log.levels.WARN,
+          { title = "opencode" }
+        )
+      end
     end
 
     vim.g.opencode_opts = {
