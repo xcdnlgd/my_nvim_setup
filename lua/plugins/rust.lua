@@ -4,7 +4,7 @@ vim.g.rustaceanvim = {
     reload_workspace_from_cargo_toml = true,
     on_initialized = function()
       vim.cmd("RustLsp flyCheck") -- NOTE: fixes (when nvim launches, i have to type for diagnostics to show)
-      vim.lsp.codelens.enable(true)
+      -- vim.lsp.codelens.enable(true)
       vim.cmd("redrawstatus")
     end
   },
